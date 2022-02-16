@@ -192,6 +192,9 @@
                     <p align="left">
                         Overall, utilizing nearest sampling produces a sharper result as it preserves the overall shape of the image, whereas utilizing bilinear sampling produces a smoother result as it checks each pixel at a higher frequency and distorts the original shape of the image. The largest difference between the two sampling methods occurs when the image data is markedly discrete or continuous, as one method will visually render the image better than the other due to these inherent advantages in performance.
                     </p>
+		    <p align="left">
+                        An issue that we noticed in this task was that if we zoom out of the screen window a lot, thick white lines render on top of the image. We attempted to debug this issue -- foremost, we set the output of our sample_buffer to always return black pixels, but this still yielded those same white lines. Ultimately, we were able to isolate the issue to be a precision issue with floating points in the built-in inside function. If the center of the pixel is passed into this function, the correct boolean isn't returned. Although we weren't able to fix this issue entirely, we wanted to write this note to acknowledge the steps we took in an attempt to debug.
+                    </p>
 
                     <h1 align="left">Task 6</h1>
                     <p align="left">
