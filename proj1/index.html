@@ -3,6 +3,16 @@
 	</head>
 	<body>
 		<h1 align="left">Overview</h1>
+		<p align="left">
+		Through this project, we have been able to implement several features: triangle rasterization, 2D matrix transformations with homogeneous coordinates and interpolation through barycentric coordinates. To tackle aliasing, we also completed the addition of three techniques: supersampling, pixel sampling and level sampling. The latter two are specifically for texture mapping. With the staff skeleton code, we are now able to use triangles to render graphics, such as the iconic lion image. The triangles are not limited by just using solid colors – we can interpolate linearly to create gradients as well! We can also upload custom images as textures to fill those triangles, which may result in interesting, warped images such as that of the blackhole Berkeley logo. And of course, our favorite robot man can now be just a little bit more expressive given the completed transformations.
+		</p>
+		<p align="left">
+		Overall, a big takeaway is to never underestimate the chaos of floating point accuracy in calculations. We also had some issues with equality signs here and there, as well as being careful about directionality especially since the downward positive y-axis can be somewhat confusing at first. Debugging was somewhat difficult at the beginning, since the output image is not exactly the most revealing of the underlying issue. Eventually, we settled into a workflow of always checking:
+		1) integer/float casting,
+		2) equality signs,
+		3) whether x/y or u/v or width/height have been swapped.
+		It was also immensely helpful to troubleshoot with black pixels to see where sampling issues might lie, especially for later tasks that call multiple functions. We would also like to think we got just good enough to identify small hints in glitchy images that point to where issues might lie. What at first looked random eventually gave us clues as to what edge cases we might have overlooked. This sort of graphical intuition is probably one of the biggest takeaways from this project, since it relies on a certain degree of understanding of the mechanics behind rendering and its related techniques.
+		</p>
 		
 		<h1 align="left">Task 1</h1>
 		<p align="left">
