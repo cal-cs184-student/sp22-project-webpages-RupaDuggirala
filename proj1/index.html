@@ -8,11 +8,52 @@
 		<p align="left">
     		In order to rasterize a triangle, we checked to see if the points were given in clockwise or counter-clockwise order, and swapped the core xi and yi vertices if so, to ensure that the triangle would be rendered irrespective of the order. To avoid looping through the entire frame, we set lower and upper bounds for the x and y-coordinates based on the input vertices. For each vertex within the bounding “box” of the triangle, we added 0.5 to its value to represent the center of the pixel, and calculated the three line equations (one for each edge) as such: (-(center_x -  x0) * (y1 -  y0)) + ((center_y - y0) * (x1 - x0)). If the output of any of these equations was 0, that indicated that the pixel was on the edge and therefore could be filled in with the fill_pixel() function. If the output of all of these equations was greater than 0, that indicated that the pixel was located inside of the triangle and therefore could also be filled. 
 		</p>
+		<
 		<p align="left">
 		Our algorithm does not check each sample within the overall frame; instead, it checks each sample within the bounding “box” of the triangle. The three input vertices that are passed into the function signify the lower and upper bounds of the coordinates that make up the triangle. We calculated the minimum and maximum values of these x- and y-values, and chose to loop over this range exclusively. Given that only the inside and edges of each triangle should be rasterized, it made sense to only loop through the range of the triangle’s coordinates in order to determine which pixels should be filled. As a result, the runtime of our algorithm can be determined by these bounds – it takes much less time to compute than one which would loop through the entire frame, and it is computationally equivalent to one that checks each sample within the bounding “box” of the triangle. 
 		</p>
 		<p align="left">
 		Here are two screenshots, with the most interesting components of the image zoomed in.
 		</p>
+		
+		<h1 align="left">Task 2</h1>
+		<p align="left">
+		We used the given sample_buffer and resized it to width x height x sample_rate in order to contain all the necessary points for sampling. What we did was to use four loops: the outer two are similar to task 1, where we simply iterated through all the integer coordinates. The inner two loops can be thought of as the number of steps we are taking within each pixel in order to get a sample. We defined a few variables to help us, such as the number of samples on each side (square root of the sample rate), the boundary of one sample (1 / the # of samples), and the size of the step we are taking (½ of the boundary of one sample). The sample_buffer indexing was accomplished by calculating how x, y, the small x (the # of steps taken so far in the x direction) and the small y (the # of steps taken so far in the y direction) contribute to the index.
+		</p>
+		<p align="left">
+		index = sampley * width * samplesononeside + samplex; where
+		sampley = y * samplesononeside + smally and 
+		samplex = x * samplesononeside + smallx.
+		</p>
+		<p align="left">
+		To illustrate, for a sample rate of nine of an image that has four pixels, the order in which they appear in the sample_buffer is as shown below:
+		0    1    2	3    4    5
+		6    7    8	9   10   11
+		12  13   14     15  16   17
+
+		18  19  20	21  22  23
+		24  25  26      27  28  29
+		30  31  32      33  34  35
+		</p>
+		<p align="left">
+		The main modification we had to make was how we’re filling out the sample_buffer. The above explanation covers how the rasterized triangle is accounted for. As for points and lines, we modified the indexing of the sample_buffer in fill_pixel such that it fits the new schematic. We also made changes such that the points and lines are “sampled” for their solid colors for all n samples, where n is the sample_rate.
+		</p>
+		<p align="left">
+		Of course, we also have to convert what we have in the sample_buffer into the actual framebuffer. To do this, we just took averages one after another as we iterated through all the samples for a pixel. The loop logic was the same as the one used to fill the sample_buffer in the first place. After obtaining the averaged out Color object, we then took each component and converted it to the 8-bit value by multiplying it by 255. Then, we populated the framebuffer with these converted values.
+		</p>
+		<p align="left">
+		Another adjustment was that whenever the frame was resized or the sample rate readjusted, we also had to call clear_buffers() to ensure that everything is rendered correctly.
+		</p>
+		<p align="left">
+		Supersampling is useful because it allows us to get more natural looking images that do not have as many jaggies by smoothing / blurring sharp edges. This is achieved by taking the average of multiple sampled points for a pixel, rather than only sampling one midpoint. We get a more accurate representation of "how much" of the pixel lies in the triangle, and can represent that information by the average. In our case, the triangles that have long narrow sides can be considered as high frequency change, which is susceptible to aliasing. Without supersampling, these edges are almost arbitrarily filled in (or not) since it only depends on the middle of the pixel. However, with supersampling, we get a better idea of how the edge is actually dividing the samples in the pixel, which in turn results in a better looking image that renders the edges more smoothly.
+		</p>
+		<p align="left">
+		This can be seen in the pictures below, where the edges have varying opacities to more accurately depict the "true edge". One will observe that the blurriness increases with the number of samples, as there are increasingly more levels of intensity that can be averaged out to, which smoothens the rapid transition in our eyes and reduces jaggies.
+		</p>
+		<p align="left">
+		To demonstrate the effect of supersampling, here is the same location of a triangle at a sample rate of 1, 4, and 16 pixels:
+		</p>
+		
+		
 	</body>
 </html>
