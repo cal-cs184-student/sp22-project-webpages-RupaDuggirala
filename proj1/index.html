@@ -61,7 +61,7 @@
             <div class="row">
                 <!-- Single Content Holder -->
                 <div class="col-md-8 offset-md-2 mt-4">
-                    <h4>Lorem ipsum dolor sit amet</h4>
+                    <h5>Link to webpage: <a href=https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj1/index.html>https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj1/index.html</a></h5>
                     <!-- <img class="float-left" width="320px" src="img/blog-4.jpg" alt=""> -->
                     <h1 align="left">Overview</h1>
                     <p align="left">
@@ -74,7 +74,7 @@
                         3) whether x/y or u/v or width/height have been swapped.
                         It was also immensely helpful to troubleshoot with black pixels to see where sampling issues might lie, especially for later tasks that call multiple functions. We would also like to think we got just good enough to identify small hints in glitchy images that point to where issues might lie. What at first looked random eventually gave us clues as to what edge cases we might have overlooked. This sort of graphical intuition is probably one of the biggest takeaways from this project, since it relies on a certain degree of understanding of the mechanics behind rendering and its related techniques.
                     </p>
-
+                    <br>
                     <h1 align="left">Task 1</h1>
                     <p align="left">
                         In order to rasterize a triangle, we checked to see if the points were given in clockwise or counter-clockwise order, and swapped the core xi and yi vertices if so, to ensure that the triangle would be rendered irrespective of the order. To avoid looping through the entire frame, we set lower and upper bounds for the x and y-coordinates based on the input vertices. For each vertex within the bounding “box” of the triangle, we added 0.5 to its value to represent the center of the pixel, and calculated the three line equations (one for each edge) as such: (-(center_x -  x0) * (y1 -  y0)) + ((center_y - y0) * (x1 - x0)). If the output of any of these equations was 0, that indicated that the pixel was on the edge and therefore could be filled in with the fill_pixel() function. If the output of all of these equations was greater than 0, that indicated that the pixel was located inside of the triangle and therefore could also be filled.
@@ -87,7 +87,7 @@
                     </p>
                     <img src="Task 1A.png">
                     <img src="Task 1B.png">
-
+                    <br>
                     <h1 align="left">Task 2</h1>
                     <p align="left">
                         We used the given sample_buffer and resized it to width x height x sample_rate in order to contain all the necessary points for sampling. What we did was to use four loops: the outer two are similar to task 1, where we simply iterated through all the integer coordinates. The inner two loops can be thought of as the number of steps we are taking within each pixel in order to get a sample. We defined a few variables to help us, such as the number of samples on each side (square root of the sample rate), the boundary of one sample (1 / the # of samples), and the size of the step we are taking (½ of the boundary of one sample). The sample_buffer indexing was accomplished by calculating how x, y, the small x (the # of steps taken so far in the x direction) and the small y (the # of steps taken so far in the y direction) contribute to the index.
@@ -99,14 +99,8 @@
                     </p>
                     <p align="left">
                         To illustrate, for a sample rate of nine of an image that has four pixels, the order in which they appear in the sample_buffer is as shown below:
-                        0    1    2	3    4    5
-                        6    7    8	9   10   11
-                        12  13   14     15  16   17
-
-                        18  19  20	21  22  23
-                        24  25  26      27  28  29
-                        30  31  32      33  34  35
                     </p>
+                    <img src="samplebuffer.png">
                     <p align="left">
                         The main modification we had to make was how we’re filling out the sample_buffer. The above explanation covers how the rasterized triangle is accounted for. As for points and lines, we modified the indexing of the sample_buffer in fill_pixel such that it fits the new schematic. We also made changes such that the points and lines are “sampled” for their solid colors for all n samples, where n is the sample_rate.
                     </p>
@@ -137,13 +131,13 @@
                         Sample Rate: 16 per pixel.
                     </p>
                     <img src="Task 2C.png">
-
+                    <br>
                     <h1 align="left">Task 3</h1>
                     <p align="left">
                         Here, we lengthened cubeman’s legs a little bit by scaling to give him extra speed so he can run quickly to his friend (you!) that he is currently waving at. The wave was achieved by rotating both arms and adjusting the translations accordingly to make sure that his arms still connect to this body. In this way, we tested all three of our transformations out.
                     </p>
                     <img src="Task 3.png">
-
+                    <br>
                     <h1 align="left">Task 4</h1>
                     <p align="left">
                         Barycentric coordinates provide a way to linearly interpolate the position of any point located on a triangle utilizing just three normalized scalars, so long as it is associated with the vertices or edges of that triangle, or is inside it. It can be thought of as using proportional areas to calculate how much of each vertex's associated value contributes to the final value at the coordinate of interest. This is done by drawing lines from the coordinate to each vertex, and the area opposite of the vertex represents the amount (or sub-area) that that vertex "contributes" to the overall area -- the smaller that triangle is, the further said vertex is from the coordinate of interest, which therefore makes sense that it would thus contribute proportionally less. All three values can then be used to calculate the final interpolated value.
@@ -156,7 +150,7 @@
                         Here is a screenshot of another implementation which utilizes the same logic, albeit on a much larger scale. In this example, barycentric coordinates are utilized to render an entire color wheel. Once again, all of the colors are blended smoothly to form a gradient across the entire surface of the circle.
                     </p>
                     <img src="Task 4B.png">
-
+                    <br>
                     <h1 align="left">Task 5</h1>
                     <p align="left">
                         Overall, sampling a pixel involves taking a measurement of each pixel at a specific position. In pixel sampling, we first need to use barycentric interpolation to obtain the texture coordinates (u,v). This can be done because we are given the coordinate mappings for all three vertices. Then, after getting the texture coordinates, we can sample the texel depending on what the mode specified was.
@@ -192,10 +186,10 @@
                     <p align="left">
                         Overall, utilizing nearest sampling produces a sharper result as it preserves the overall shape of the image, whereas utilizing bilinear sampling produces a smoother result as it checks each pixel at a higher frequency and distorts the original shape of the image. The largest difference between the two sampling methods occurs when the image data is markedly discrete or continuous, as one method will visually render the image better than the other due to these inherent advantages in performance.
                     </p>
-		    <p align="left">
+                    <p align="left">
                         An issue that we noticed in this task was that if we zoom out of the screen window a lot, thick white lines render on top of the image. We attempted to debug this issue -- foremost, we set the output of our sample_buffer to always return black pixels, but this still yielded those same white lines. Ultimately, we were able to isolate the issue to be a precision issue with floating points in the built-in inside function. If the center of the pixel is passed into this function, the correct boolean isn't returned. Although we weren't able to fix this issue entirely, we wanted to write this note to acknowledge the steps we took in an attempt to debug.
                     </p>
-
+                    <br>
                     <h1 align="left">Task 6</h1>
                     <p align="left">
                         Level sampling works by generating a mipmap – that is, levels of different resolution that are meant to depict the texture in question. So a higher level will have lower resolution, as there are less pixels to represent details. The essential idea in level sampling is that we don’t always default to the 1:1 pixel to texel mapping, because in reality there will occasionally arise the need to minify. So instead, we will adjust the “texture” we are sampling from by making different levels of detail available. In our texture mapping scenario, we first try to find the appropriate level by calculating how much u and v changes when x and y changes. In other words, we are calculating the differentials du/dx, du/dy, dv/dx and dv/dy. Then, we try to find the pixel direction that is experiencing the most rapid change – since that axis is more likely to alias. To do so, we calculate the overall change experienced on either the x or y axis: sqrt((du/dx)^2 + (dv/dx)^2) vs sqrt((du/dy)^2 + (dv/dy)^2.
@@ -215,7 +209,7 @@
                     <p align="left">
                         To demonstrate these added functionalities, here are a few screenshots:
                     </p>
-		    <p align="left">
+                    <p align="left">
                         L_ZERO and P_NEAREST:
                     </p>
                     <img src="Task 6A.png">
