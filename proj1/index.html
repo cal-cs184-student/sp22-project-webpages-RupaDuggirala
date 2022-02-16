@@ -8,7 +8,6 @@
 		<p align="left">
     		In order to rasterize a triangle, we checked to see if the points were given in clockwise or counter-clockwise order, and swapped the core xi and yi vertices if so, to ensure that the triangle would be rendered irrespective of the order. To avoid looping through the entire frame, we set lower and upper bounds for the x and y-coordinates based on the input vertices. For each vertex within the bounding “box” of the triangle, we added 0.5 to its value to represent the center of the pixel, and calculated the three line equations (one for each edge) as such: (-(center_x -  x0) * (y1 -  y0)) + ((center_y - y0) * (x1 - x0)). If the output of any of these equations was 0, that indicated that the pixel was on the edge and therefore could be filled in with the fill_pixel() function. If the output of all of these equations was greater than 0, that indicated that the pixel was located inside of the triangle and therefore could also be filled. 
 		</p>
-		<
 		<p align="left">
 		Our algorithm does not check each sample within the overall frame; instead, it checks each sample within the bounding “box” of the triangle. The three input vertices that are passed into the function signify the lower and upper bounds of the coordinates that make up the triangle. We calculated the minimum and maximum values of these x- and y-values, and chose to loop over this range exclusively. Given that only the inside and edges of each triangle should be rasterized, it made sense to only loop through the range of the triangle’s coordinates in order to determine which pixels should be filled. As a result, the runtime of our algorithm can be determined by these bounds – it takes much less time to compute than one which would loop through the entire frame, and it is computationally equivalent to one that checks each sample within the bounding “box” of the triangle. 
 		</p>
@@ -53,6 +52,12 @@
 		<p align="left">
 		To demonstrate the effect of supersampling, here is the same location of a triangle at a sample rate of 1, 4, and 16 pixels:
 		</p>
+		
+		<h1 align="left">Task 3</h1>
+		<p align="left">
+		Here, we lengthened cubeman’s legs a little bit by scaling to give him extra speed so he can run quickly to his friend (you!) that he is currently waving at. The wave was achieved by rotating both arms and adjusting the translations accordingly to make sure that his arms still connect to this body. In this way, we tested all three of our transformations out.
+		</p>
+		
 		
 		
 	</body>
