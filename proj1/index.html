@@ -100,9 +100,9 @@
                         We used the given sample_buffer and resized it to width x height x sample_rate in order to contain all the necessary points for sampling. What we did was to use four loops: the outer two are similar to task 1, where we simply iterated through all the integer coordinates. The inner two loops can be thought of as the number of steps we are taking within each pixel in order to get a sample. We defined a few variables to help us, such as the number of samples on each side (square root of the sample rate), the boundary of one sample (1 / the # of samples), and the size of the step we are taking (½ of the boundary of one sample). The sample_buffer indexing was accomplished by calculating how x, y, the small x (the # of steps taken so far in the x direction) and the small y (the # of steps taken so far in the y direction) contribute to the index.
                     </p>
                     <p align="left">
-                        index = sampley * width * samplesononeside + samplex; where
-                        sampley = y * samplesononeside + smally and
-                        samplex = x * samplesononeside + smallx.
+                        index = sampley * width * samplesononeside + samplex <br>
+                        sampley = y * samplesononeside + smally <br>
+                        samplex = x * samplesononeside + smallx
                     </p>
                     <p align="left">
                         To illustrate, for a sample rate of nine of an image that has four pixels, the order in which they appear in the sample_buffer is as shown below:
@@ -144,6 +144,9 @@
                         Here, we lengthened cubeman’s legs a little bit by scaling to give him extra speed so he can run quickly to his friend (you!) that he is currently waving at. The wave was achieved by rotating both arms and adjusting the translations accordingly to make sure that his arms still connect to this body. In this way, we tested all three of our transformations out.
                     </p>
                     <img src="Task 3.png">
+                    <p align="left">
+                        We also want to note that we had some uncertainty as to which direction the rotation should be going initially, since the slide's conventions were different than the one in the framebuffer. Specifically, the y-axis is positive as it goes down. Luckily, it ultimately is an easy fix of adding a negative sign in front of the input degree, but we still wanted to note it down in case our implementation turned out to be opposite of the intended behavior.
+                    </p>
                     <br>
                     <h1 align="left">Task 4</h1>
                     <p align="left">
