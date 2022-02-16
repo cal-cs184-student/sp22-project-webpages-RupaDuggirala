@@ -69,6 +69,26 @@
 		Here is a screenshot of another implementation which utilizes the same logic, albeit on a much larger scale. In this example, barycentric coordinates are utilized to render an entire color wheel. Once again, all of the colors are blended smoothly to form a gradient across the entire surface of the circle.
 		</p>
 		
+		<h1 align="left">Task 5</h1>
+		<p align="left">
+		Overall, sampling a pixel involves taking a measurement of each pixel at a specific position. In pixel sampling, we first need to use barycentric interpolation to obtain the texture coordinates (u,v). This can be done because we are given the coordinate mappings for all three vertices. Then, after getting the texture coordinates, we can sample the texel depending on what the mode specified was. 
+		</p>
+		<p align="left">
+		For nearest neighbor, we are simply rounding our texture coordinates to the nearest integer and sampling that texel. This produces a more 8-bit feel to the graphics rendered, and the edges are crisp and clear without smoothening. 
+		</p>
+		<p align="left">
+		For bilinear, we are taking the nearest four texels and lerping accordingly in order to find the average color that we should be filling in our pixel of interest with. We followed the discussion in lecture and deconstructed the math to consist of three 1D lerps: two horizontal, then one vertical. Since lerping takes into account the distances from our "real" texture coordinate to the actual points we are sampling from, we get a weighted balance of all the information, resulting in a smoother, blurrier image that looks less sharp than nearest neighbor sampling.
+		</p>
+		<p align="left">
+		Here are screenshots to demonstrate the difference between nearest and bilinear sampling, each sampled at 1 and 16 samples per pixel.
+		</p>
+		<p align="left">
+		These images demonstrate the difference between the two sampling methods. When only 1 sample per pixel is taken, the image that is rendered through nearest sampling contains more white pixels, and those that are filled in are more distinct in color. Overall, this composes the strongest sharpened effect amongst all 4 images. If the image is rendered through bilinear sampling (still sampled at 1 sample per pixel) instead, the image contains fewer white pixels. A larger percentage of the image pixels are filled in, albeit in duller hues. This makes the image appear as though it’s been blurred overall. When 16 samples per pixel are taken, the image that is rendered through nearest sampling is similar to the bilinear sample utilizing 1 pixel – both images contain a mix of white and shaded-in pixels. The hues of the colored pixels are definitely dull relative to the overall color gradient, making the image look somewhat blurred. Finally, if the image is rendered through bilinear sampling (still sampled at 16 samples per pixel), this effect is magnified. There are even fewer white pixels, and even more shaded-in pixels. Overall, this composes the strongest blurred effect amongst all 4 images. 
+		</p>
+		<p align="left">
+		Overall, utilizing nearest sampling produces a sharper result as it preserves the overall shape of the image, whereas utilizing bilinear sampling produces a smoother result as it checks each pixel at a higher frequency and distorts the original shape of the image. The largest difference between the two sampling methods occurs when the image data is markedly discrete or continuous, as one method will visually render the image better than the other due to these inherent advantages in performance. 
+		</p>
+		
 		
 		
 		
