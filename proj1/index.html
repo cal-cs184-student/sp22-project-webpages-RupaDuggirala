@@ -239,14 +239,15 @@
                     </p>
                     <img src="Task 6B.png">
                     <p align="left">
-                        L_NEAREST and P_NEAREST:
+			L_NEAREST and P_NEAREST: In this image, sampling from the nearest mipmap level yields an image that is blurred and less aliased than either of the two images that sampled from the 0th mipmap level. Yet the pixels are still relatively distinct in hue (or not entirely blurred) as nearest sampling is used to preserve the original image.
                     </p>
                     <img src="Task 6C.png">
                     <p align="left">
-                        L_NEAREST and P_LINEAR:
+                        L_NEAREST and P_LINEAR: This is the "smoothest" image overall -- the effect is produced by the blurred gradient due to sampling from the nearest mipmap level, and is further componded by the bilinear sampling method, which makes the pixels less distinct in color. 
                     </p>
                     <img src="Task 6D.png">
                     <br>
+			
                     <hr>
                     <h5>
                         Moon by GetTemplates.co <br>
