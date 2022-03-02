@@ -1,162 +1,262 @@
-<html>
-	<head>
-	</head>
-	<body>
-		<h5>Link to Webpage: <a href=https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj2/index.html>https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj2/index.html</a></h5>
-                    <h1 align="left">Overview</h1>
-		    <p align="left">
-                    </p>
-                    <br>
-                    <h1 align="left">Task 1: Bezier Curves with 1D de Casteljau Subdivision</h1>
-		    <p align="left">
-			    In its simplest form, de Casteljau’s algorithm provides a way to calculate the position of a point on a line segment. It utilizes linear interpolation between the two endpoints of a line segment to choose a point that is on the line, such that the ratio of the distance between one endpoint to this point and the total distance between the two endpoints is t; in the algorithm, t is a modifiable parameter within the range of (0, 1). This concept can be extended recursively in order to evaluate Bezier curves. Given a Bezier curve of degree n, de Casteljau’s algorithm can be used to form it by performing a linear interpolation between two curves of degree n - 1. Each of these n - 1 degree curves are formed by n control points, so a linear interpolation is calculated between each consecutive set of n - 1 points. Ultimately, another linear interpolation is calculated between those results in order to form the Bezier curve of degree n.
-                    </p>
-		    <p align="left">
-			    This was done through the evaluateStep() function, which took in a vector of n control points as input. The function looped through these n points, and extracted each point i and its consecutive neighbor i + 1 to insert them into a linear interpolation equation with the parameter t. This yielded an intermediate point i’. All n of these intermediate points ultimately form the intermediate control points for the next subdivision level. Overall, these calculations are done recursively in order to relate the control points as a smooth, continuous Bezier curve.
-                    </p>
-		    <p align="left">
-			    Here is a Bezier curve that we created, which has 6 control points. 
-                    </p>
-		    <img src="Task 1A.png">
-		    <p align="left">
-			    The following screenshots show each step, from the original 6 control points to the final evaluated point. 
-                    </p>
-		    <img src="Task 1B.png">
-		    <img src="Task 1C.png">
-		    <img src="Task 1D.png">
-		    <img src="Task 1E.png">
-		    <img src="Task 1F.png">
-		    <p align="left">
-			    These next two screenshots show the completed Bezier curve.
-                    </p>
-		    <img src="Task 1G.png">
-		    <img src="Task 1H.png">
-		    <p align="left">
-			    Here is a slightly different Bezier curve, which we found by moving the original control points.
-                    </p>
-		    <img src="Task 1I.png">
-		    <p align="left">
-			    These next two screenshots illustrate the effect of modifying the parameter t, and how it impacts the positions of the control points and the final evaluated point on the curve. 
-                    </p>
-		    <img src="Task 1J.png">
-		    <img src="Task 1K.png">
-                    <br>
-		    <h1 align="left">Task 2: Bezier Surfaces with Separable 1D de Casteljau</h1>
-		    <p align="left">
-			    Previously, de Casteljau’s algorithm was utilized recursively in 2D to perform repeated linear interpolation calculations on control points. This is how the Bezier curves from the previous task were derived. In this task, we were able to extend this logic to 3D in order to create Bezier surfaces.
-                    </p>
-		    <p align="left">
-			    Foremost, the evaluateStep() function was utilized to calculate each step of de Casteljau’s algorithm. Similar to the 2D version, a vector of n control points was taken as input. The function looped through these points and performed a linear interpolation calculation on each consecutive pair. This yielded the intermediate control points for the next subdivision level. The only difference between the 2D and 3D versions of this function were in the use of Vector2D and Vector3D vectors for the points, as Bezier curves are formed from points in the x-y plane (or 2 coordinates) while Bezier surfaces are composed of points in the x-y-z plane (or 3 coordinates). Overall, this function repeats recursively in order to output a smooth, continuous Bezier curve from the initial control points for each level.
-                    </p>
-		    <p align="left">
-			    This entire calculation is then done recursively. The evaluate1D() function is able to fully evaluate de Casteljau’s algorithm – it takes in a vector of points and loops through each of the n subdivision levels, calculating evaluateStep() using that level’s corresponding points and the parameter t as input. Ultimately, this yields a single point that lies on the Bezier curve at t. At last, the evaluate() function utilizes the two aforementioned functions in order to transform the Bezier curves into a Bezier surface. Given an n-by-n “grid” of control points, the function loops through each row and evaluates de Casteljau’s algorithm on it using the parameter u. This yields n intermediate points in total, which form a Bezier curve characterized by u. Then, de Casteljau’s algorithm is evaluated on this “moving” Bezier curve using the parameter v. This yields a single point that lies on the corresponding Bezier surface at the parameters u and v.
-                    </p>
-		    <p align="left">
-			    Therefore, de Casteljau’s algorithm is performed recursively on each level of the n-by-n “grid” of control points in order to transform the Bezier curves into a Bezier surface. This is known as the separable 1D de Casteljau’s algorithm. 
-                    </p>
-		    <p align="left">
-			    Here is a screenshot of bez/teapot.bez, as evaluated by our implementation.
-                    </p>
-		    <img src="Task 2A.png">
-                    <br>
-		    <h1 align="left">Task 3: Area-Weighted Vertex Normals</h1>
-		    <p align="left">
-			    The biggest challenge of this part was to iterate through all the faces that have the vertex of interest as its point. Luckily, we were able to reference the past semester’s primer code (which prints all the neighbor vertices) in order to efficiently get the weighted normal for each face. Without going into too much of the gory detail, we took the vertex’s halfedge, found its twin (for ease of iteration), then found the two other vertices of that face by going around using multiple next()s. Once we have all three vertices, we can compute two vectors that are pointing between any of the two vertices, making sure to choose them such that their cross product is pointing “out”. This cross product’s magnitude is also twice that of the surface’s area, so now we can scale the unit cross product by the area (in order to weigh it properly), and then add it to a running sum that will ultimately be the final vector representing the vertex normal. This can be done because the cross product of two vectors on a surface (the triangle) will result in a normal vector to that face. We performed these calculations for all the faces by using twin() and next() accordingly, until we returned back to the first halfedge we started off with. Now, our final vector has accumulated all the weighted face normals. The last thing we need to do is normalize it into a unit vector, which we used the inbuilt unit() function to accomplish.
-                    </p>
-		    <p align="left">
-			    Below are our screenshots of before and after the vertex normal calculations.
-                    </p>
-		    <img src="Task 3A.png">
-		    <img src="Task 3B.png">
-                    <br>
-		    <h1 align="left">Task 4: Edge Flip</h1>
-		    <p align="left">
-			    We followed the suggestions and drew out two same triangles which were going to be the target of edge flipping, listing all the components: edges, halfedges, faces and vertices. We first worked on changing the root vertex of the two halfedges on that edge, then the next() assignments, which we used extensively in the parts for assigning faces to halfedges. Finally, we changed the halfedge assignments in the vertices and faces to match that of the halfedge which we accessed them with. That way, we can ensure a sort of reciprocity (ie. if we accessed a vertex/face using a halfedge, then that halfedge can be assigned to that vertex/face since all halfedge information is accurate at this point). Picking the order of doing things turned out to be rather important for staying sane, and it took a few tries to optimize. It was also helpful to realize that edge-halfedge and twin() relationships don’t change, which matched the unchanged results we saw when we commented out those assignments. 
-                    </p>
-		    <p align="left">
-			    Implementation tricks: For the next() reassignments, laying out all the edges in advance and naming them after the diagram we were referring to definitely helped. What also helped was using the “reciprocity” trick above for assigning halfedges to vertices/faces, after recognizing that once we have an accurate way to traverse the halfedges, we are good to rely on the halfedge information.
-                    </p>
-		    <p align="left">
-			    Debugging tricks: isolating reassignments by reordering them to see whether our bugs were dependent on that, which would indicate some reliance on data that is being changed. 
-                    </p>
-		    <p align="left">
-			    Debugging journey: First we had a bug where half of the face would be gone and we could see through to the otherside. We quickly realized that we forgot to re-assign the halfedge’s faces and the face’s halfedges. Then, we were trying to avoid assignment / pointer issues by defining new Halfedge variables to be placeholders, but it turns out that mucked everything up. Two of the edges that are not being flipped decided to overlap with the other two edges opposite of them. When we switched back to using the iterator to perform the assignments, everything actually went okay and it fixed the silly aforementioned bug. 
-                    </p>
-		    <p align="left">
-			    Here are some edge flips!
-                    </p>
-		    <img src="Task 4A.png">
-		    <img src="Task 4B.png">
-		    <img src="Task 4C.png">
-		    <img src="Task 4D.png">
-		    <img src="Task 4E.png">
-		    <img src="Task 4F.png">
-                    <br>
-		    <h1 align="left">Task 5: Edge Split</h1>
-		    <p align="left">
-			    To implement this task, we drew out two adjacent triangles once again – this time, with the edges, halfedges, faces and vertices that would be present after the shared edge between the two triangles was split. After doing this, we first calculated how to add in the new vertex at the midpoint of the shared edge. We then were able to form halfedges (and assign edges and vertices to each one) to connect this new vertex to all four of the original vertices. At this point, we focused upon the fact that the edge split operation transformed two adjacent triangle faces into four – we analyzed each triangle individually, ensuring that the next and twin pointers for the edges and the faces for each halfedge were precisely modified to reflect this change. In accordance with the reciprocity approach from task 4, we had to ensure that the relationship between a vertex or face and their corresponding halfedge was assigned from both perspectives; this was the final task at hand in order to update all of the new components and ensure that the edge split was done successfully. 
-                    </p>
-		    <p align="left">
-			    What helped the most when we were implementing or debugging this task was to draw out the result of the edge split operation on the original two triangles, and to observe (and subsequently implement) all of the edges, halfedges, faces and vertices that would be present in the final state. Initially, we found that it was difficult to keep track of all of these new components, but we chose to split up each task into segments (ie. changing the next pointers for each edge or changing the faces for each halfedge) that were repeated for each of the four resulting triangle faces. Being able to “view” the task through this lens and reference the reciprocity approach from task 4 allowed us to ensure that all of the new and old attributes were being assigned correctly.
-                    </p>
-		    <p align="left">
-			    Here are two screenshots of a mesh: the first depicts the original state before an edge split, and the second is after the edge split.
-                    </p>
-		    <img src="Task 5A.png">
-		    <img src="Task 5B.png">
-		    <p align="left">
-			    The next two screenshots display the mesh before and after multiple edge splits along two columns at its center.
-                    </p>
-		    <img src="Task 5C.png">
-		    <img src="Task 5D.png">
-		    <p align="left">
-			    The next sequence of screenshots displays the mesh before and after a combination of multiple edge splits and edge flips. 
-                    </p>
-		    <img src="Task 5C.png">
-		    <img src="Task 5E.png">
-		    <p align="left">
-			    Our debugging journey was quite eventful – initially, we attempted to populate the new and existing edges simultaneously and then modify the faces that correspond to each halfedge. Yet through this approach, we found that we were missing many pointer assignments and did not accurately create all of the new components or update the old ones; therefore, the split operation did not work for us at all. After shifting our focus to the final four adjacent triangles and segmenting each sub-task accordingly, we found that it was easier to keep track of and implement the changes to all of the edges, halfedges, faces and vertices such that they would be in the ideal final state. 
-                    </p>
-                    <br>
-		    <h1 align="left">Task 6: Loop Subdivision for Mesh Upsampling</h1>
-		    <p align="left">
-			    To implement loop subdivision in this task, we primarily followed the steps as mentioned in the spec. For the first step, we iterated through all of the “old” vertices in the input mesh. In this loop, we calculated an updated position for each vertex by weighting its original position and the sum of the original positions of all neighboring vertices with its degree. We also marked each of these vertices as being “old”, for future reference. Next, we iterated through all of the old edges in the input mesh in order to compute a new position for each vertex. Each halfedge in this loop was considered to be a shared edge that would help calculate the nearest four vertices (such that they would collectively form a pair of adjacent triangles), and a weighted sum of these four vertices was utilized to calculate a new position for each edge. Once again, we marked each of these edges as being “old”, for future reference. For the second step (or the subdivision), we iterated through each of the n edges in the input mesh; if an edge was “old”, it was split with the splitEdge() method from task 5. The new vertex that was formed from this operation was updated to be “new”, and its position was assigned to be the original edge’s midpoint (or its computed new position from the first step). Next, we iterated through all edges in the input mesh; if an edge was “new”, we calculated its endpoints and flipped the edge with the flipEdge() method from task 4, only if one of the vertices was “new” and the other was “old”. For the last step, we iterated through all of the vertices in the subdivided mesh in order to set the position of each vertex to be the updated position from our previous calculations. 
-                    </p>
-		    <p align="left">
-			    What helped us the most as we implemented and debugged this task was to follow the recommendation in the spec to update the vertex positions before performing 4-1 subdivisions over the entire mesh. Initially, we did not exactly follow this suggestion, which made it difficult to keep track of which calculations corresponded to a specific component of the input mesh; as a result, loop subdivision did not work at all. Within each of the recommended steps, we considered whether we were iterating through the edges or vertices of the input mesh, and narrowed our focus down to the specific mesh components that needed to be updated, in accordance with the calculations provided in the spec. This allowed us to ensure that all of the sub-tasks in loop subdivision were occuring correctly.
-                    </p>
-		    <p align="left">
-			    It was interesting to observe the visual effects of loop subdivision upon the input mesh – here is a sequence of screenshots, with the original mesh first and two successive levels of loop subdivision on that same mesh afterwards. 
-                    </p>
-		    <img src="Task 6A.png">
-		    <img src="Task 6B.png">
-		    <img src="Task 6C.png">
-		    <p align="left">
-			    From these screenshots, we can observe the visual impact of loop subdivision; as the mesh increases in complexity, it yields a surface that is noticeably more refined and smooth. This is perhaps best observed in the curvature of the teapot’s spout – in the first screenshot, this surface appears to be made up of multiple distinct lines, which results in a “boxy” feel; whereas in the third screenshot, this surface appears to be made up of a single curved line, which yields a rounded feel. As a result, loop subdivision effectively refines the input mesh with greater accuracy and flexibility, ensuring that sharp corners and edges appear to be more rounded out to form a smooth and continuous surface. 
-                    </p>
-		    <p align="left">
-			    Interestingly, this effect is not as noticeable if we choose to pre-split some edges. Even though the shape of the spout is still preserved, the post-subdivision curvature was smoother previously. We know that sharp edges and points will be rounded out when an edge is split, but doing this ahead of upsampling leads to more mesh components being pulled closer together as the new vertices are being calculated from the adjacent faces. This makes it increasingly difficult to smooth out the surface as volume is “lost”, and effectively preserves the shape more closely. This is evident in the following sequence of screenshots – the first one focuses upon the teapot’s spout and displays the split edges along it. The next two screenshots display two successive levels of loop subdivision on that same mesh afterwards, which illustrate how the spout is not as curved as before.
-                    </p>
-		    <img src="Task 6D.png">
-		    <img src="Task 6E.png">
-		    <img src="Task 6F.png">
-		    <p align="left">
-			    We can also analyze the effect of loop subdivision upon dae/cube.dae. The following screenshots depict the initial cube and several iterations of loop subdivision upon it. We can visualize how the cube becomes increasingly asymmetric. 
-                    </p>
-		    <img src="Task 6G.png">
-		    <img src="Task 6H.png">
-		    <img src="Task 6I.png">
-		    <img src="Task 6J.png">
-		    <p align="left">
-			    A foundational component of loop subdivision is that the updated position for each vertex is found by weighting its original position and the sum of the original positions of all neighboring vertices with its degree. As a result, if the output of subdivision is asymmetric, this indicates that the vertices are “pulled” inconsistently to the adjacent faces during these calculations, which means that the vertices are located in asymmetric locations in the input mesh as well. In order to ensure that the cube subdivides symmetrically, we can pre-process the cube with deliberate edge splits, such that the input mesh looks a bit more symmetric to begin with. This can be done by splitting the primary edge that overlays each face of the cube, as it helps create symmetry in the input mesh that is consistent with both the faces and edges of the entire cube.
-                    </p>
-		    <p align="left">
-			    The following screenshots depict the initial pre-processed cube (or with symmetric edge splits on its faces) and several iterations of loop subdivision upon it. We can now visualize how the cube subdivides in a more symmetric manner. 
-                    </p>
-		    <img src="Task 6K.png">
-		    <img src="Task 6L.png">
-		    <img src="Task 6M.png">
-		    <img src="Task 6N.png">
-                    <br>
-	</body>
-</html>
+<!DOCTYPE html>
+<!--
+	Moon by GetTemplates.co
+	URL: https://gettemplates.co
+-->
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Moon - Multipurpose Bootstrap 4 Template by GetTemplates.co</title>
+	<meta name="description" content="Core HTML Project">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- External CSS -->
+	<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css">
+	<link rel="stylesheet" href="vendor/lightcase/lightcase.css">
+
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700" rel="stylesheet">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/style.min.css">
+	<link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+	<link href="https://file.myfontastic.com/7vRKgqrN3iFEnLHuqYhYuL/icons.css" rel="stylesheet">
+
+	<!-- Modernizr JS for IE8 support of HTML5 elements and media queries -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+
+</head>
+<body data-spy="scroll" data-target="#navbar-nav-header" class="single-layout">
+	<div class="boxed-page">
+		<nav id="gtco-header-navbar" class="navbar navbar-expand-lg py-4">
+			<div class="container">
+				<a class="navbar-brand d-flex align-items-center" href="../index.html">
+					<span class="lnr lnr-moon"></span>
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-nav-header" aria-controls="navbar-nav-header" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="lnr lnr-menu"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbar-nav-header">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="../index.html">Back to Home</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</nav>		<div class="jumbotron d-flex align-items-center" style="background-image: url(9_2.jpg)">
+			<div class="container text-center">
+				<h1 class="display-2 mb-4 single-blog-title">Project 2: Mesh Edit</h1>
+				<h3>Celeste Wu, Rupa Duggirala</h3>
+			</div>
+		</div>		<!-- Contact Form Section -->
+		<section id="gtco-single-content" class="bg-white">
+			<div class="container">
+				<div class="section-content blog-content">
+					<div class="row">
+						<!-- Single Content Holder -->
+						<div class="col-md-8 offset-md-2 mt-4">
+							<h5>Link to webpage: <a href=https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj2/index.html>https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj1/index.html</a></h5>
+							<!-- <img class="float-left" width="320px" src="img/blog-4.jpg" alt=""> -->
+							<br>
+							<h1 align="left">Overview</h1>
+							<p align="left">
+							</p>
+							<br>
+							<h1 align="left">Task 1: Bezier Curves with 1D de Casteljau Subdivision</h1>
+							<p align="left">
+								In its simplest form, de Casteljau’s algorithm provides a way to calculate the position of a point on a line segment. It utilizes linear interpolation between the two endpoints of a line segment to choose a point that is on the line, such that the ratio of the distance between one endpoint to this point and the total distance between the two endpoints is t; in the algorithm, t is a modifiable parameter within the range of (0, 1). This concept can be extended recursively in order to evaluate Bezier curves. Given a Bezier curve of degree n, de Casteljau’s algorithm can be used to form it by performing a linear interpolation between two curves of degree n - 1. Each of these n - 1 degree curves are formed by n control points, so a linear interpolation is calculated between each consecutive set of n - 1 points. Ultimately, another linear interpolation is calculated between those results in order to form the Bezier curve of degree n.
+							</p>
+							<p align="left">
+								This was done through the evaluateStep() function, which took in a vector of n control points as input. The function looped through these n points, and extracted each point i and its consecutive neighbor i + 1 to insert them into a linear interpolation equation with the parameter t. This yielded an intermediate point i’. All n of these intermediate points ultimately form the intermediate control points for the next subdivision level. Overall, these calculations are done recursively in order to relate the control points as a smooth, continuous Bezier curve.
+							</p>
+							<p align="left">
+								Here is a Bezier curve that we created, which has 6 control points.
+							</p>
+							<img src="Task 1A.png">
+							<p align="left">
+								The following screenshots show each step, from the original 6 control points to the final evaluated point.
+							</p>
+							<img src="Task 1B.png">
+							<img src="Task 1C.png">
+							<img src="Task 1D.png">
+							<img src="Task 1E.png">
+							<img src="Task 1F.png">
+							<p align="left">
+								These next two screenshots show the completed Bezier curve.
+							</p>
+							<img src="Task 1G.png">
+							<img src="Task 1H.png">
+							<p align="left">
+								Here is a slightly different Bezier curve, which we found by moving the original control points.
+							</p>
+							<img src="Task 1I.png">
+							<p align="left">
+								These next two screenshots illustrate the effect of modifying the parameter t, and how it impacts the positions of the control points and the final evaluated point on the curve.
+							</p>
+							<img src="Task 1J.png">
+							<img src="Task 1K.png">
+							<br>
+							<h1 align="left">Task 2: Bezier Surfaces with Separable 1D de Casteljau</h1>
+							<p align="left">
+								Previously, de Casteljau’s algorithm was utilized recursively in 2D to perform repeated linear interpolation calculations on control points. This is how the Bezier curves from the previous task were derived. In this task, we were able to extend this logic to 3D in order to create Bezier surfaces.
+							</p>
+							<p align="left">
+								Foremost, the evaluateStep() function was utilized to calculate each step of de Casteljau’s algorithm. Similar to the 2D version, a vector of n control points was taken as input. The function looped through these points and performed a linear interpolation calculation on each consecutive pair. This yielded the intermediate control points for the next subdivision level. The only difference between the 2D and 3D versions of this function were in the use of Vector2D and Vector3D vectors for the points, as Bezier curves are formed from points in the x-y plane (or 2 coordinates) while Bezier surfaces are composed of points in the x-y-z plane (or 3 coordinates). Overall, this function repeats recursively in order to output a smooth, continuous Bezier curve from the initial control points for each level.
+							</p>
+							<p align="left">
+								This entire calculation is then done recursively. The evaluate1D() function is able to fully evaluate de Casteljau’s algorithm – it takes in a vector of points and loops through each of the n subdivision levels, calculating evaluateStep() using that level’s corresponding points and the parameter t as input. Ultimately, this yields a single point that lies on the Bezier curve at t. At last, the evaluate() function utilizes the two aforementioned functions in order to transform the Bezier curves into a Bezier surface. Given an n-by-n “grid” of control points, the function loops through each row and evaluates de Casteljau’s algorithm on it using the parameter u. This yields n intermediate points in total, which form a Bezier curve characterized by u. Then, de Casteljau’s algorithm is evaluated on this “moving” Bezier curve using the parameter v. This yields a single point that lies on the corresponding Bezier surface at the parameters u and v.
+							</p>
+							<p align="left">
+								Therefore, de Casteljau’s algorithm is performed recursively on each level of the n-by-n “grid” of control points in order to transform the Bezier curves into a Bezier surface. This is known as the separable 1D de Casteljau’s algorithm.
+							</p>
+							<p align="left">
+								Here is a screenshot of bez/teapot.bez, as evaluated by our implementation.
+							</p>
+							<img src="Task 2A.png">
+							<br>
+							<h1 align="left">Task 3: Area-Weighted Vertex Normals</h1>
+							<p align="left">
+								The biggest challenge of this part was to iterate through all the faces that have the vertex of interest as its point. Luckily, we were able to reference the past semester’s primer code (which prints all the neighbor vertices) in order to efficiently get the weighted normal for each face. Without going into too much of the gory detail, we took the vertex’s halfedge, found its twin (for ease of iteration), then found the two other vertices of that face by going around using multiple next()s. Once we have all three vertices, we can compute two vectors that are pointing between any of the two vertices, making sure to choose them such that their cross product is pointing “out”. This cross product’s magnitude is also twice that of the surface’s area, so now we can scale the unit cross product by the area (in order to weigh it properly), and then add it to a running sum that will ultimately be the final vector representing the vertex normal. This can be done because the cross product of two vectors on a surface (the triangle) will result in a normal vector to that face. We performed these calculations for all the faces by using twin() and next() accordingly, until we returned back to the first halfedge we started off with. Now, our final vector has accumulated all the weighted face normals. The last thing we need to do is normalize it into a unit vector, which we used the inbuilt unit() function to accomplish.
+							</p>
+							<p align="left">
+								Below are our screenshots of before and after the vertex normal calculations.
+							</p>
+							<img src="Task 3A.png">
+							<img src="Task 3B.png">
+							<br>
+							<h1 align="left">Task 4: Edge Flip</h1>
+							<p align="left">
+								We followed the suggestions and drew out two same triangles which were going to be the target of edge flipping, listing all the components: edges, halfedges, faces and vertices. We first worked on changing the root vertex of the two halfedges on that edge, then the next() assignments, which we used extensively in the parts for assigning faces to halfedges. Finally, we changed the halfedge assignments in the vertices and faces to match that of the halfedge which we accessed them with. That way, we can ensure a sort of reciprocity (ie. if we accessed a vertex/face using a halfedge, then that halfedge can be assigned to that vertex/face since all halfedge information is accurate at this point). Picking the order of doing things turned out to be rather important for staying sane, and it took a few tries to optimize. It was also helpful to realize that edge-halfedge and twin() relationships don’t change, which matched the unchanged results we saw when we commented out those assignments.
+							</p>
+							<p align="left">
+								Implementation tricks: For the next() reassignments, laying out all the edges in advance and naming them after the diagram we were referring to definitely helped. What also helped was using the “reciprocity” trick above for assigning halfedges to vertices/faces, after recognizing that once we have an accurate way to traverse the halfedges, we are good to rely on the halfedge information.
+							</p>
+							<p align="left">
+								Debugging tricks: isolating reassignments by reordering them to see whether our bugs were dependent on that, which would indicate some reliance on data that is being changed.
+							</p>
+							<p align="left">
+								Debugging journey: First we had a bug where half of the face would be gone and we could see through to the otherside. We quickly realized that we forgot to re-assign the halfedge’s faces and the face’s halfedges. Then, we were trying to avoid assignment / pointer issues by defining new Halfedge variables to be placeholders, but it turns out that mucked everything up. Two of the edges that are not being flipped decided to overlap with the other two edges opposite of them. When we switched back to using the iterator to perform the assignments, everything actually went okay and it fixed the silly aforementioned bug.
+							</p>
+							<p align="left">
+								Here are some edge flips!
+							</p>
+							<img src="Task 4A.png">
+							<img src="Task 4B.png">
+							<img src="Task 4C.png">
+							<img src="Task 4D.png">
+							<img src="Task 4E.png">
+							<img src="Task 4F.png">
+							<br>
+							<h1 align="left">Task 5: Edge Split</h1>
+							<p align="left">
+								To implement this task, we drew out two adjacent triangles once again – this time, with the edges, halfedges, faces and vertices that would be present after the shared edge between the two triangles was split. After doing this, we first calculated how to add in the new vertex at the midpoint of the shared edge. We then were able to form halfedges (and assign edges and vertices to each one) to connect this new vertex to all four of the original vertices. At this point, we focused upon the fact that the edge split operation transformed two adjacent triangle faces into four – we analyzed each triangle individually, ensuring that the next and twin pointers for the edges and the faces for each halfedge were precisely modified to reflect this change. In accordance with the reciprocity approach from task 4, we had to ensure that the relationship between a vertex or face and their corresponding halfedge was assigned from both perspectives; this was the final task at hand in order to update all of the new components and ensure that the edge split was done successfully.
+							</p>
+							<p align="left">
+								What helped the most when we were implementing or debugging this task was to draw out the result of the edge split operation on the original two triangles, and to observe (and subsequently implement) all of the edges, halfedges, faces and vertices that would be present in the final state. Initially, we found that it was difficult to keep track of all of these new components, but we chose to split up each task into segments (ie. changing the next pointers for each edge or changing the faces for each halfedge) that were repeated for each of the four resulting triangle faces. Being able to “view” the task through this lens and reference the reciprocity approach from task 4 allowed us to ensure that all of the new and old attributes were being assigned correctly.
+							</p>
+							<p align="left">
+								Here are two screenshots of a mesh: the first depicts the original state before an edge split, and the second is after the edge split.
+							</p>
+							<img src="Task 5A.png">
+							<img src="Task 5B.png">
+							<p align="left">
+								The next two screenshots display the mesh before and after multiple edge splits along two columns at its center.
+							</p>
+							<img src="Task 5C.png">
+							<img src="Task 5D.png">
+							<p align="left">
+								The next sequence of screenshots displays the mesh before and after a combination of multiple edge splits and edge flips.
+							</p>
+							<img src="Task 5C.png">
+							<img src="Task 5E.png">
+							<p align="left">
+								Our debugging journey was quite eventful – initially, we attempted to populate the new and existing edges simultaneously and then modify the faces that correspond to each halfedge. Yet through this approach, we found that we were missing many pointer assignments and did not accurately create all of the new components or update the old ones; therefore, the split operation did not work for us at all. After shifting our focus to the final four adjacent triangles and segmenting each sub-task accordingly, we found that it was easier to keep track of and implement the changes to all of the edges, halfedges, faces and vertices such that they would be in the ideal final state.
+							</p>
+							<br>
+							<h1 align="left">Task 6: Loop Subdivision for Mesh Upsampling</h1>
+							<p align="left">
+								To implement loop subdivision in this task, we primarily followed the steps as mentioned in the spec. For the first step, we iterated through all of the “old” vertices in the input mesh. In this loop, we calculated an updated position for each vertex by weighting its original position and the sum of the original positions of all neighboring vertices with its degree. We also marked each of these vertices as being “old”, for future reference. Next, we iterated through all of the old edges in the input mesh in order to compute a new position for each vertex. Each halfedge in this loop was considered to be a shared edge that would help calculate the nearest four vertices (such that they would collectively form a pair of adjacent triangles), and a weighted sum of these four vertices was utilized to calculate a new position for each edge. Once again, we marked each of these edges as being “old”, for future reference. For the second step (or the subdivision), we iterated through each of the n edges in the input mesh; if an edge was “old”, it was split with the splitEdge() method from task 5. The new vertex that was formed from this operation was updated to be “new”, and its position was assigned to be the original edge’s midpoint (or its computed new position from the first step). Next, we iterated through all edges in the input mesh; if an edge was “new”, we calculated its endpoints and flipped the edge with the flipEdge() method from task 4, only if one of the vertices was “new” and the other was “old”. For the last step, we iterated through all of the vertices in the subdivided mesh in order to set the position of each vertex to be the updated position from our previous calculations.
+							</p>
+							<p align="left">
+								What helped us the most as we implemented and debugged this task was to follow the recommendation in the spec to update the vertex positions before performing 4-1 subdivisions over the entire mesh. Initially, we did not exactly follow this suggestion, which made it difficult to keep track of which calculations corresponded to a specific component of the input mesh; as a result, loop subdivision did not work at all. Within each of the recommended steps, we considered whether we were iterating through the edges or vertices of the input mesh, and narrowed our focus down to the specific mesh components that needed to be updated, in accordance with the calculations provided in the spec. This allowed us to ensure that all of the sub-tasks in loop subdivision were occuring correctly.
+							</p>
+							<p align="left">
+								It was interesting to observe the visual effects of loop subdivision upon the input mesh – here is a sequence of screenshots, with the original mesh first and two successive levels of loop subdivision on that same mesh afterwards.
+							</p>
+							<img src="Task 6A.png">
+							<img src="Task 6B.png">
+							<img src="Task 6C.png">
+							<p align="left">
+								From these screenshots, we can observe the visual impact of loop subdivision; as the mesh increases in complexity, it yields a surface that is noticeably more refined and smooth. This is perhaps best observed in the curvature of the teapot’s spout – in the first screenshot, this surface appears to be made up of multiple distinct lines, which results in a “boxy” feel; whereas in the third screenshot, this surface appears to be made up of a single curved line, which yields a rounded feel. As a result, loop subdivision effectively refines the input mesh with greater accuracy and flexibility, ensuring that sharp corners and edges appear to be more rounded out to form a smooth and continuous surface.
+							</p>
+							<p align="left">
+								Interestingly, this effect is not as noticeable if we choose to pre-split some edges. Even though the shape of the spout is still preserved, the post-subdivision curvature was smoother previously. We know that sharp edges and points will be rounded out when an edge is split, but doing this ahead of upsampling leads to more mesh components being pulled closer together as the new vertices are being calculated from the adjacent faces. This makes it increasingly difficult to smooth out the surface as volume is “lost”, and effectively preserves the shape more closely. This is evident in the following sequence of screenshots – the first one focuses upon the teapot’s spout and displays the split edges along it. The next two screenshots display two successive levels of loop subdivision on that same mesh afterwards, which illustrate how the spout is not as curved as before.
+							</p>
+							<img src="Task 6D.png">
+							<img src="Task 6E.png">
+							<img src="Task 6F.png">
+							<p align="left">
+								We can also analyze the effect of loop subdivision upon dae/cube.dae. The following screenshots depict the initial cube and several iterations of loop subdivision upon it. We can visualize how the cube becomes increasingly asymmetric.
+							</p>
+							<img src="Task 6G.png">
+							<img src="Task 6H.png">
+							<img src="Task 6I.png">
+							<img src="Task 6J.png">
+							<p align="left">
+								A foundational component of loop subdivision is that the updated position for each vertex is found by weighting its original position and the sum of the original positions of all neighboring vertices with its degree. As a result, if the output of subdivision is asymmetric, this indicates that the vertices are “pulled” inconsistently to the adjacent faces during these calculations, which means that the vertices are located in asymmetric locations in the input mesh as well. In order to ensure that the cube subdivides symmetrically, we can pre-process the cube with deliberate edge splits, such that the input mesh looks a bit more symmetric to begin with. This can be done by splitting the primary edge that overlays each face of the cube, as it helps create symmetry in the input mesh that is consistent with both the faces and edges of the entire cube.
+							</p>
+							<p align="left">
+								The following screenshots depict the initial pre-processed cube (or with symmetric edge splits on its faces) and several iterations of loop subdivision upon it. We can now visualize how the cube subdivides in a more symmetric manner.
+							</p>
+							<img src="Task 6K.png">
+							<img src="Task 6L.png">
+							<img src="Task 6M.png">
+							<img src="Task 6N.png">
+							<br>
+
+							<hr>
+							<h5>
+								Moon by GetTemplates.co <br>
+								URL: https://gettemplates.co
+							</h5>
+						</div>
+						<!-- End of Contact Form Holder -->
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- End of Contact Form Section -->		<footer class="mastfoot mb-3 bg-white py-4 border-top">
+			<div class="inner container">
+				<div class="row">
+					<div class="col-md-6 d-flex align-items-center justify-content-md-start justify-content-center">
+						<p class="mb-0">&copy; 2019 Moon. All Right Reserved. Design by <a href="https://gettemplates.co" target="_blank">GetTemplates.co</a>.</p>
+					</div>
+
+				</div>
+			</div>
+		</footer>
+	</div>
+
+	</div>
+	<!-- External JS -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+	<script src="vendor/bootstrap/popper.min.js"></script>
+	<script src="vendor/bootstrap/bootstrap.min.js"></script>
+	<script src="vendor/select2/select2.min.js "></script>
+	<script src="vendor/owlcarousel/owl.carousel.min.js"></script>
+	<script src="vendor/isotope/isotope.min.js"></script>
+	<script src="vendor/lightcase/lightcase.js"></script>
+	<script src="vendor/waypoints/waypoint.min.js"></script>
+	<script src="vendor/countTo/jquery.countTo.js"></script>
+
+	<!-- Main JS -->
+	<script src="js/app.min.js "></script>
+	<script src="//localhost:35729/livereload.js"></script>
+</body>
