@@ -41,5 +41,23 @@
 		    <img src="Task 1J.png">
 		    <img src="Task 1K.png">
                     <br>
+		    <h1 align="left">Task 2: Bezier Surfaces with Separable 1D de Casteljau</h1>
+		    <p align="left">
+			    Previously, de Casteljau’s algorithm was utilized recursively in 2D to perform repeated linear interpolation calculations on control points. This is how the Bezier curves from the previous task were derived. In this task, we were able to extend this logic to 3D in order to create Bezier surfaces.
+                    </p>
+		    <p align="left">
+			    Foremost, the evaluateStep() function was utilized to calculate each step of de Casteljau’s algorithm. Similar to the 2D version, a vector of n control points was taken as input. The function looped through these points and performed a linear interpolation calculation on each consecutive pair. This yielded the intermediate control points for the next subdivision level. The only difference between the 2D and 3D versions of this function were in the use of Vector2D and Vector3D vectors for the points, as Bezier curves are formed from points in the x-y plane (or 2 coordinates) while Bezier surfaces are composed of points in the x-y-z plane (or 3 coordinates). Overall, this function repeats recursively in order to output a smooth, continuous Bezier curve from the initial control points for each level.
+                    </p>
+		    <p align="left">
+			    This entire calculation is then done recursively. The evaluate1D() function is able to fully evaluate de Casteljau’s algorithm – it takes in a vector of points and loops through each of the n subdivision levels, calculating evaluateStep() using that level’s corresponding points and the parameter t as input. Ultimately, this yields a single point that lies on the Bezier curve at t. At last, the evaluate() function utilizes the two aforementioned functions in order to transform the Bezier curves into a Bezier surface. Given an n-by-n “grid” of control points, the function loops through each row and evaluates de Casteljau’s algorithm on it using the parameter u. This yields n intermediate points in total, which form a Bezier curve characterized by u. Then, de Casteljau’s algorithm is evaluated on this “moving” Bezier curve using the parameter v. This yields a single point that lies on the corresponding Bezier surface at the parameters u and v.
+                    </p>
+		    <p align="left">
+			    Therefore, de Casteljau’s algorithm is performed recursively on each level of the n-by-n “grid” of control points in order to transform the Bezier curves into a Bezier surface. This is known as the separable 1D de Casteljau’s algorithm. 
+                    </p>
+		    <p align="left">
+			    Here is a screenshot of bez/teapot.bez, as evaluated by our implementation.
+                    </p>
+		    <img src="Task 2A.png">
+                    <br>
 	</body>
 </html>
