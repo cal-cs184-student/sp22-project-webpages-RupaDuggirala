@@ -7,7 +7,39 @@
 		    <p align="left">
                     </p>
                     <br>
-                    <h1 align="left">Task 1</h1>
+                    <h1 align="left">Task 1: Bezier Curves with 1D de Casteljau Subdivision</h1>
+		    <p align="left">
+			    In its simplest form, de Casteljau’s algorithm provides a way to calculate the position of a point on a line segment. It utilizes linear interpolation between the two endpoints of a line segment to choose a point that is on the line, such that the ratio of the distance between one endpoint to this point and the total distance between the two endpoints is t; in the algorithm, t is a modifiable parameter within the range of (0, 1). This concept can be extended recursively in order to evaluate Bezier curves. Given a Bezier curve of degree n, de Casteljau’s algorithm can be used to form it by performing a linear interpolation between two curves of degree n - 1. Each of these n - 1 degree curves are formed by n control points, so a linear interpolation is calculated between each consecutive set of n - 1 points. Ultimately, another linear interpolation is calculated between those results in order to form the Bezier curve of degree n.
+                    </p>
+		    <p align="left">
+			    This was done through the evaluateStep() function, which took in a vector of n control points as input. The function looped through these n points, and extracted each point i and its consecutive neighbor i + 1 to insert them into a linear interpolation equation with the parameter t. This yielded an intermediate point i’. All n of these intermediate points ultimately form the intermediate control points for the next subdivision level. Overall, these calculations are done recursively in order to relate the control points as a smooth, continuous Bezier curve.
+                    </p>
+		    <p align="left">
+			    Here is a Bezier curve that we created, which has 6 control points. 
+                    </p>
+		    <img src="Task 1A.png">
+		    <p align="left">
+			    The following screenshots show each step, from the original 6 control points to the final evaluated point. 
+                    </p>
+		    <img src="Task 1B.png">
+		    <img src="Task 1C.png">
+		    <img src="Task 1D.png">
+		    <img src="Task 1E.png">
+		    <img src="Task 1F.png">
+		    <p align="left">
+			    These next two screenshots show the completed Bezier curve.
+                    </p>
+		    <img src="Task 1G.png">
+		    <img src="Task 1H.png">
+		    <p align="left">
+			    Here is a slightly different Bezier curve, which we found by moving the original control points.
+                    </p>
+		    <img src="Task 1I.png">
+		    <p align="left">
+			    These next two screenshots illustrate the effect of modifying the parameter t, and how it impacts the positions of the control points and the final evaluated point on the curve. 
+                    </p>
+		    <img src="Task 1J.png">
+		    <img src="Task 1K.png">
                     <br>
 	</body>
 </html>
