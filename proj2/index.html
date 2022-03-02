@@ -69,5 +69,28 @@
 		    <img src="Task 3A.png">
 		    <img src="Task 3B.png">
                     <br>
+		    <h1 align="left">Task 4: Edge Flip</h1>
+		    <p align="left">
+			    We followed the suggestions and drew out two same triangles which were going to be the target of edge flipping, listing all the components: edges, halfedges, faces and vertices. We first worked on changing the root vertex of the two halfedges on that edge, then the next() assignments, which we used extensively in the parts for assigning faces to halfedges. Finally, we changed the halfedge assignments in the vertices and faces to match that of the halfedge which we accessed them with. That way, we can ensure a sort of reciprocity (ie. if we accessed a vertex/face using a halfedge, then that halfedge can be assigned to that vertex/face since all halfedge information is accurate at this point). Picking the order of doing things turned out to be rather important for staying sane, and it took a few tries to optimize. It was also helpful to realize that edge-halfedge and twin() relationships don’t change, which matched the unchanged results we saw when we commented out those assignments. 
+                    </p>
+		    <p align="left">
+			    Implementation tricks: For the next() reassignments, laying out all the edges in advance and naming them after the diagram we were referring to definitely helped. What also helped was using the “reciprocity” trick above for assigning halfedges to vertices/faces, after recognizing that once we have an accurate way to traverse the halfedges, we are good to rely on the halfedge information.
+                    </p>
+		    <p align="left">
+			    Debugging tricks: isolating reassignments by reordering them to see whether our bugs were dependent on that, which would indicate some reliance on data that is being changed. 
+                    </p>
+		    <p align="left">
+			    Debugging journey: First we had a bug where half of the face would be gone and we could see through to the otherside. We quickly realized that we forgot to re-assign the halfedge’s faces and the face’s halfedges. Then, we were trying to avoid assignment / pointer issues by defining new Halfedge variables to be placeholders, but it turns out that mucked everything up. Two of the edges that are not being flipped decided to overlap with the other two edges opposite of them. When we switched back to using the iterator to perform the assignments, everything actually went okay and it fixed the silly aforementioned bug. 
+                    </p>
+		    <p align="left">
+			    Here are some edge flips!
+                    </p>
+		    <img src="Task 4A.png">
+		    <img src="Task 4B.png">
+		    <img src="Task 4C.png">
+		    <img src="Task 4D.png">
+		    <img src="Task 4E.png">
+		    <img src="Task 4F.png">
+                    <br>
 	</body>
 </html>
