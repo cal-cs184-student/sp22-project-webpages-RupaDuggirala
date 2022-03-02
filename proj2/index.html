@@ -92,5 +92,31 @@
 		    <img src="Task 4E.png">
 		    <img src="Task 4F.png">
                     <br>
+		    <h1 align="left">Task 5: Edge Split</h1>
+		    <p align="left">
+			    To implement this task, we drew out two adjacent triangles once again – this time, with the edges, halfedges, faces and vertices that would be present after the shared edge between the two triangles was split. After doing this, we first calculated how to add in the new vertex at the midpoint of the shared edge. We then were able to form halfedges (and assign edges and vertices to each one) to connect this new vertex to all four of the original vertices. At this point, we focused upon the fact that the edge split operation transformed two adjacent triangle faces into four – we analyzed each triangle individually, ensuring that the next and twin pointers for the edges and the faces for each halfedge were precisely modified to reflect this change. In accordance with the reciprocity approach from task 4, we had to ensure that the relationship between a vertex or face and their corresponding halfedge was assigned from both perspectives; this was the final task at hand in order to update all of the new components and ensure that the edge split was done successfully. 
+                    </p>
+		    <p align="left">
+			    What helped the most when we were implementing or debugging this task was to draw out the result of the edge split operation on the original two triangles, and to observe (and subsequently implement) all of the edges, halfedges, faces and vertices that would be present in the final state. Initially, we found that it was difficult to keep track of all of these new components, but we chose to split up each task into segments (ie. changing the next pointers for each edge or changing the faces for each halfedge) that were repeated for each of the four resulting triangle faces. Being able to “view” the task through this lens and reference the reciprocity approach from task 4 allowed us to ensure that all of the new and old attributes were being assigned correctly.
+                    </p>
+		    <p align="left">
+			    Here are two screenshots of a mesh: the first depicts the original state before an edge split, and the second is after the edge split.
+                    </p>
+		    <img src="Task 5A.png">
+		    <img src="Task 5B.png">
+		    <p align="left">
+			    The next two screenshots display the mesh before and after multiple edge splits along two columns at its center.
+                    </p>
+		    <img src="Task 5C.png">
+		    <img src="Task 5D.png">
+		    <p align="left">
+			    The next sequence of screenshots displays the mesh before and after a combination of multiple edge splits and edge flips. 
+                    </p>
+		    <img src="Task 5C.png">
+		    <img src="Task 5E.png">
+		    <p align="left">
+			    Our debugging journey was quite eventful – initially, we attempted to populate the new and existing edges simultaneously and then modify the faces that correspond to each halfedge. Yet through this approach, we found that we were missing many pointer assignments and did not accurately create all of the new components or update the old ones; therefore, the split operation did not work for us at all. After shifting our focus to the final four adjacent triangles and segmenting each sub-task accordingly, we found that it was easier to keep track of and implement the changes to all of the edges, halfedges, faces and vertices such that they would be in the ideal final state. 
+                    </p>
+                    <br>
 	</body>
 </html>
