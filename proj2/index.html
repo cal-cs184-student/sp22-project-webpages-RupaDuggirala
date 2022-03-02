@@ -59,5 +59,15 @@
                     </p>
 		    <img src="Task 2A.png">
                     <br>
+		    <h1 align="left">Task 3: Area-Weighted Vertex Normals</h1>
+		    <p align="left">
+			    The biggest challenge of this part was to iterate through all the faces that have the vertex of interest as its point. Luckily, we were able to reference the past semester’s primer code (which prints all the neighbor vertices) in order to efficiently get the weighted normal for each face. Without going into too much of the gory detail, we took the vertex’s halfedge, found its twin (for ease of iteration), then found the two other vertices of that face by going around using multiple next()s. Once we have all three vertices, we can compute two vectors that are pointing between any of the two vertices, making sure to choose them such that their cross product is pointing “out”. This cross product’s magnitude is also twice that of the surface’s area, so now we can scale the unit cross product by the area (in order to weigh it properly), and then add it to a running sum that will ultimately be the final vector representing the vertex normal. This can be done because the cross product of two vectors on a surface (the triangle) will result in a normal vector to that face. We performed these calculations for all the faces by using twin() and next() accordingly, until we returned back to the first halfedge we started off with. Now, our final vector has accumulated all the weighted face normals. The last thing we need to do is normalize it into a unit vector, which we used the inbuilt unit() function to accomplish.
+                    </p>
+		    <p align="left">
+			    Below are our screenshots of before and after the vertex normal calculations.
+                    </p>
+		    <img src="Task 3A.png">
+		    <img src="Task 3B.png">
+                    <br>
 	</body>
 </html>
