@@ -118,5 +118,45 @@
 			    Our debugging journey was quite eventful – initially, we attempted to populate the new and existing edges simultaneously and then modify the faces that correspond to each halfedge. Yet through this approach, we found that we were missing many pointer assignments and did not accurately create all of the new components or update the old ones; therefore, the split operation did not work for us at all. After shifting our focus to the final four adjacent triangles and segmenting each sub-task accordingly, we found that it was easier to keep track of and implement the changes to all of the edges, halfedges, faces and vertices such that they would be in the ideal final state. 
                     </p>
                     <br>
+		    <h1 align="left">Task 6: Loop Subdivision for Mesh Upsampling</h1>
+		    <p align="left">
+			    To implement loop subdivision in this task, we primarily followed the steps as mentioned in the spec. For the first step, we iterated through all of the “old” vertices in the input mesh. In this loop, we calculated an updated position for each vertex by weighting its original position and the sum of the original positions of all neighboring vertices with its degree. We also marked each of these vertices as being “old”, for future reference. Next, we iterated through all of the old edges in the input mesh in order to compute a new position for each vertex. Each halfedge in this loop was considered to be a shared edge that would help calculate the nearest four vertices (such that they would collectively form a pair of adjacent triangles), and a weighted sum of these four vertices was utilized to calculate a new position for each edge. Once again, we marked each of these edges as being “old”, for future reference. For the second step (or the subdivision), we iterated through each of the n edges in the input mesh; if an edge was “old”, it was split with the splitEdge() method from task 5. The new vertex that was formed from this operation was updated to be “new”, and its position was assigned to be the original edge’s midpoint (or its computed new position from the first step). Next, we iterated through all edges in the input mesh; if an edge was “new”, we calculated its endpoints and flipped the edge with the flipEdge() method from task 4, only if one of the vertices was “new” and the other was “old”. For the last step, we iterated through all of the vertices in the subdivided mesh in order to set the position of each vertex to be the updated position from our previous calculations. 
+                    </p>
+		    <p align="left">
+			    What helped us the most as we implemented and debugged this task was to follow the recommendation in the spec to update the vertex positions before performing 4-1 subdivisions over the entire mesh. Initially, we did not exactly follow this suggestion, which made it difficult to keep track of which calculations corresponded to a specific component of the input mesh; as a result, loop subdivision did not work at all. Within each of the recommended steps, we considered whether we were iterating through the edges or vertices of the input mesh, and narrowed our focus down to the specific mesh components that needed to be updated, in accordance with the calculations provided in the spec. This allowed us to ensure that all of the sub-tasks in loop subdivision were occuring correctly.
+                    </p>
+		    <p align="left">
+			    It was interesting to observe the visual effects of loop subdivision upon the input mesh – here is a sequence of screenshots, with the original mesh first and two successive levels of loop subdivision on that same mesh afterwards. 
+                    </p>
+		    <img src="Task 6A.png">
+		    <img src="Task 6B.png">
+		    <img src="Task 6C.png">
+		    <p align="left">
+			    From these screenshots, we can observe the visual impact of loop subdivision; as the mesh increases in complexity, it yields a surface that is noticeably more refined and smooth. This is perhaps best observed in the curvature of the teapot’s spout – in the first screenshot, this surface appears to be made up of multiple distinct lines, which results in a “boxy” feel; whereas in the third screenshot, this surface appears to be made up of a single curved line, which yields a rounded feel. As a result, loop subdivision effectively refines the input mesh with greater accuracy and flexibility, ensuring that sharp corners and edges appear to be more rounded out to form a smooth and continuous surface. 
+                    </p>
+		    <p align="left">
+			    Interestingly, this effect is not as noticeable if we choose to pre-split some edges. Even though the shape of the spout is still preserved, the post-subdivision curvature was smoother previously. We know that sharp edges and points will be rounded out when an edge is split, but doing this ahead of upsampling leads to more mesh components being pulled closer together as the new vertices are being calculated from the adjacent faces. This makes it increasingly difficult to smooth out the surface as volume is “lost”, and effectively preserves the shape more closely. This is evident in the following sequence of screenshots – the first one focuses upon the teapot’s spout and displays the split edges along it. The next two screenshots display two successive levels of loop subdivision on that same mesh afterwards, which illustrate how the spout is not as curved as before.
+                    </p>
+		    <img src="Task 6D.png">
+		    <img src="Task 6E.png">
+		    <img src="Task 6F.png">
+		    <p align="left">
+			    We can also analyze the effect of loop subdivision upon dae/cube.dae. The following screenshots depict the initial cube and several iterations of loop subdivision upon it. We can visualize how the cube becomes increasingly asymmetric. 
+                    </p>
+		    <img src="Task 6G.png">
+		    <img src="Task 6H.png">
+		    <img src="Task 6I.png">
+		    <img src="Task 6J.png">
+		    <p align="left">
+			    A foundational component of loop subdivision is that the updated position for each vertex is found by weighting its original position and the sum of the original positions of all neighboring vertices with its degree. As a result, if the output of subdivision is asymmetric, this indicates that the vertices are “pulled” inconsistently to the adjacent faces during these calculations, which means that the vertices are located in asymmetric locations in the input mesh as well. In order to ensure that the cube subdivides symmetrically, we can pre-process the cube with deliberate edge splits, such that the input mesh looks a bit more symmetric to begin with. This can be done by splitting the primary edge that overlays each face of the cube, as it helps create symmetry in the input mesh that is consistent with both the faces and edges of the entire cube.
+                    </p>
+		    <p align="left">
+			    The following screenshots depict the initial pre-processed cube (or with symmetric edge splits on its faces) and several iterations of loop subdivision upon it. We can now visualize how the cube subdivides in a more symmetric manner. 
+                    </p>
+		    <img src="Task 6K.png">
+		    <img src="Task 6L.png">
+		    <img src="Task 6M.png">
+		    <img src="Task 6N.png">
+                    <br>
 	</body>
 </html>
