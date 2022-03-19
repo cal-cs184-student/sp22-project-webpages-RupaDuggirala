@@ -143,56 +143,108 @@
 							<br>
 							<h1 align="left">Part 4: Global Illumination</h1>
 							<p align="left">
-								We followed the suggestions and drew out two same triangles which were going to be the target of edge flipping, listing all the components: edges, halfedges, faces and vertices. We first worked on changing the root vertex of the two halfedges on that edge, then the next() assignments, which we used extensively in the parts for assigning faces to halfedges. Finally, we changed the halfedge assignments in the vertices and faces to match that of the halfedge which we accessed them with. That way, we can ensure a sort of reciprocity (ie. if we accessed a vertex/face using a halfedge, then that halfedge can be assigned to that vertex/face since all halfedge information is accurate at this point). Picking the order of doing things turned out to be rather important for staying sane, and it took a few tries to optimize. It was also helpful to realize that edge-halfedge and twin() relationships don’t change, which matched the unchanged results we saw when we commented out those assignments.
+								Our implementation of the indirect lighting function was centered around the at_least_one_bounce_radiance() function. The base cases of this function occurred when the input ray’s depth was either 0 or 1 – if the depth was 0, we returned a zero-vector as the recursion should ideally never reach this point. If the depth was 1, we returned a function call to one_bounce_radiance(), which determined if the sample should be taken via direct hemisphere sampling and returned a function call to estimate_direct_lighting_hemisphere() if so and to estimate_direct_lighting_importance() if not. If the input ray’s depth exceeded 1, we first started off with importance sampling on the BSDF, by using the sample_f() function to calculate an incident light direction to w_out for w_in, the pdf of that sampled direction, and the reflectance in that sample. We then checked for intersections at the scene, by converting w_in into world space using the provided object-to-world conversion matrix. A corresponding sceneRay was created to represent a new incoming ray direction between the hit point and the w_in_world. Once again, we utilized the bvh->intersect() method that we defined earlier to determine if this sceneRay was created such that it could have a valid intersection. If so, we calculated the cosine as a dot product of the angle between w_in and the Vector3D(0, 0, 1). As long as this cosine result was positive and the input ray’s depth was equal to the max_ray_depth possible for indirect lighting (which was set in raytrace_pixel and checked to be > 1), we could decrement the sceneRay’s depth and recursively call the at_least_one_bounce_radiance() function on the sceneRay. As per the reflection equation, the result of this function was multiplied by the reflectance from sample_f() and the cosine to compose the numerator, which was all divided by the denominator, or the pdf from sample_f(). The resulting quantity was then added to the final output L_out. 
 							</p>
 							<p align="left">
-								Implementation tricks: For the next() reassignments, laying out all the edges in advance and naming them after the diagram we were referring to definitely helped. What also helped was using the “reciprocity” trick above for assigning halfedges to vertices/faces, after recognizing that once we have an accurate way to traverse the halfedges, we are good to rely on the halfedge information.
+								Even if the cosine result was positive, if we had found in an earlier recursive call of the at_least_one_bounce_radiance() function that a boolean value called “terminate” was set to false, this indicated that we had to utilize Russian Roulette as an unbiased method of random termination to end this recursion. A new value for terminate was calculated in this branch, through a coin_flip() function that returned true with a probability of 0.35. After this point, everything else is the same as per the previous branch: sceneRay’s depth is decremented, the at_least_one_bounce_radiance() function is recursively called on the sceneRay, and the numerator and denominator for the reflection equation are calculated the same way. The only difference is that in the denominator, the pdf is scaled by 0.65 (or 1 - the probability of the coin_flip() function returning true). Once again, the resulting quantity was then added to the final output L_out.
 							</p>
 							<p align="left">
-								Debugging tricks: isolating reassignments by reordering them to see whether our bugs were dependent on that, which would indicate some reliance on data that is being changed.
-							</p>
-							<p align="left">
-								Debugging journey: First we had a bug where half of the face would be gone and we could see through to the otherside. We quickly realized that we forgot to re-assign the halfedge’s faces and the face’s halfedges. Then, we were trying to avoid assignment / pointer issues by defining new Halfedge variables to be placeholders, but it turns out that mucked everything up. Two of the edges that are not being flipped decided to overlap with the other two edges opposite of them. When we switched back to using the iterator to perform the assignments, everything actually went okay and it fixed the silly aforementioned bug.
-							</p>
-							<p align="left">
-								Here are some edge flips!
+								The following screenshots are some images that are rendered with global (direct and indirect) illumination. We used 1024 samples per pixel!
 							</p>
 							<img src="Task 4A.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 5 -r 480 360 -f spherespart4.png ../../../dae/sky/CBspheres_lambertian.dae.
+							</p>
 							<img src="Task 4B.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 5 -r 480 480 -f wallepart4.png ../../../dae/sky/wall-e.dae.
+							</p>
 							<img src="Task 4C.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 5 -r 480 480 -f dragonpart4.png ../../../dae/sky/dragon.dae.
+							</p>
+							<p align="left">
+								We then picked one scene and compared rendered views; first with only direct illumination, then only indirect illumination. We used 1024 samples per pixel, and edited PathTracer::at_least_one_bounce_radiance(...) in our code to generate these views.
+							</p>
 							<img src="Task 4D.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 5 -r 480 360 -f spherespart4directonly.png ../../../dae/sky/CBspheres_lambertian.dae. 
+							</p>
 							<img src="Task 4E.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 5 -r 480 360 -f spherespart4indirectonly.png ../../../dae/sky/CBspheres_lambertian.dae. 
+							</p>
+							<p align="left">
+								For CBbunny.dae, we then compared rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). We used 1024 samples per pixel!
+							</p>
 							<img src="Task 4F.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 0 -r 480 360 -f bunnys1024m0.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4G.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 1 -r 480 360 -f bunnys1024m1.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4H.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 2 -r 480 360 -f bunnys1024m2.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4I.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 2 -r 480 360 -f bunnys1024m3.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4J.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1024 -l 16 -m 2 -r 480 360 -f bunnys1024m100.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<p align="left">
+								We then picked one scene (CBunny.dae) and compared rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. We used 4 light rays!
+							</p>
+							<img src="Task 4K.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 1 -l 4 -m 4 -r 480 360 -f bunnys1l4m4.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4L.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 2 -l 4 -m 4 -r 480 360 -f bunnys2l4m4.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4M.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 4 -l 4 -m 4 -r 480 360 -f bunnys4l4m4.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4N.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 8 -l 4 -m 4 -r 480 360 -f bunnys8l4m4.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4O.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 8 -l 4 -m 4 -r 480 360 -f bunnys16l4m4.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4P.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 8 -l 4 -m 4 -r 480 360 -f bunnys64l4m4.png ../../../dae/sky/CBbunny.dae.
+							</p>
+							<img src="Task 4Q.png">
+							<p align="left">
+								This was found with the following command: -t 8 -s 8 -l 4 -m 4 -r 480 360 -f bunnys1024l4m4.png ../../../dae/sky/CBbunny.dae.
+							</p>
 							<br>
 							<h1 align="left">Part 5: Adaptive Sampling</h1>
 							<p align="left">
-								To implement this task, we drew out two adjacent triangles once again – this time, with the edges, halfedges, faces and vertices that would be present after the shared edge between the two triangles was split. After doing this, we first calculated how to add in the new vertex at the midpoint of the shared edge. We then were able to form halfedges (and assign edges and vertices to each one) to connect this new vertex to all four of the original vertices. At this point, we focused upon the fact that the edge split operation transformed two adjacent triangle faces into four – we analyzed each triangle individually, ensuring that the next and twin pointers for the edges and the faces for each halfedge were precisely modified to reflect this change. In accordance with the reciprocity approach from task 4, we had to ensure that the relationship between a vertex or face and their corresponding halfedge was assigned from both perspectives; this was the final task at hand in order to update all of the new components and ensure that the edge split was done successfully.
-							</p>
-							<p align="left">
-								What helped the most when we were implementing or debugging this task was to draw out the result of the edge split operation on the original two triangles, and to observe (and subsequently implement) all of the edges, halfedges, faces and vertices that would be present in the final state. Initially, we found that it was difficult to keep track of all of these new components, but we chose to split up each task into segments (ie. changing the next pointers for each edge or changing the faces for each halfedge) that were repeated for each of the four resulting triangle faces. Being able to “view” the task through this lens and reference the reciprocity approach from task 4 allowed us to ensure that all of the new and old attributes were being assigned correctly.
-							</p>
-							<p align="left">
-								Here are two screenshots of a mesh: the first depicts the original state before an edge split, and the second is after the edge split.
+								We implemented adaptive sampling by editing the ray tracing logic in part 1.2. we set up two accumulators: s1 and s2, in order to track the sum of all the illuminance, and all the illuminance squared for convenience of later calculations. In our loop, we put a check to see if the number of samples done so far is a multiple of SamplesPerBatch. If it is, we compute the standard deviation and the mean, as well as our convergence term to check whether it is less than or equal to max tolerance * mean. If it is, then we immediately set the sample size to the buffer for visualization, set the pixel to the right radiance and break out of the loop. We have to make sure that we normalize by the right sample number, which was something we neglected on our first pass. 
 							</p>
 							<img src="Task 5A.png">
 							<img src="Task 5B.png">
 							<p align="left">
-								The next two screenshots display the mesh before and after multiple edge splits along two columns at its center.
-							</p>
-							<img src="Task 5C.png">
-							<img src="Task 5D.png">
-							<p align="left">
-								The next sequence of screenshots displays the mesh before and after a combination of multiple edge splits and edge flips.
-							</p>
-							<img src="Task 5C.png">
-							<img src="Task 5E.png">
-							<p align="left">
-								Our debugging journey was quite eventful – initially, we attempted to populate the new and existing edges simultaneously and then modify the faces that correspond to each halfedge. Yet through this approach, we found that we were missing many pointer assignments and did not accurately create all of the new components or update the old ones; therefore, the split operation did not work for us at all. After shifting our focus to the final four adjacent triangles and segmenting each sub-task accordingly, we found that it was easier to keep track of and implement the changes to all of the edges, halfedges, faces and vertices such that they would be in the ideal final state.
+								This was found with the following command: -t 8 -s 2048 -a 64 0.05 -l 1 -m 5 -r 480 360 -f bunnytask5.png ../../../dae/sky/CBbunny.dae.
 							</p>
 							<br>
 							<h1 align="left">Conclusion</h1>
 							<p align="left">
-								Through this project, we were able to implement a few key components of a physical renderer by building out the underlying path-tracing algorithm. In Parts I and II, we focused upon ray-scene intersection and a bounding volume hierarchy (or BVH) acceleration structure. We focused upon creating the most foundational components of the renderer in these parts, whether it be generating camera rays or pixel samples, implementing the ray-triangle intersection algorithm as per the Moller-Trumbore method, and creating and intersecting the BVH in order to enables efficiently traverse primitives in a scene after categorizing them based on location through an optimally chosen splitPoint. In Parts III, IV, and V, we developed various illumination algorithms to produce the realistic effect of physically based lighting and materials upon our images. We first worked on direct illumination, and created two versions of direct lighting function – one with uniform hemisphere sampling and the other with importance sampling of the lights. Then, we transitioned into indirect global illumination, and estimated the total radiance by recursively calculating its value with each bounce of a ray in the specified sample direction, for which Russian Roulette was utilized for unbiased termination. Finally, we added adaptive sampling to concentrate the samples in the more “difficult” components of the image and avoid using a high number of samples per pixel.
+								We took turns taking stabs at each section. Usually one person takes the lead and starts us off with some foundation of code. Then the other person will debug and help catch silly mistakes. It was helpful to switch off every now and then so one person doesn't get hard stuck. We also found it helpful to use github commit names descriptively and to push often. 
+							</p>
+							<p align="left">
+								We had some issues getting Rupa's computer to render images, so Celeste compiled most of the rendering parts for the writeup while Rupa wrote down our algorithm and thought process. Overall we are working well as a team since this is our third project together. We learnt to work around our availability and strengths, especially when it came to spec understanding and brainstorming. 
 							</p>
 
 							<hr>
