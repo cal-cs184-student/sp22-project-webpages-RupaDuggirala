@@ -2,6 +2,17 @@
 	<head>
 	</head>
 	<body>
-		Project 3-1 here
+		<p align="left">
+		</p>
+		<h5>Link to Webpage: <a href=https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj3-1/index.html>https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj3-1/index.html</a></h5>
+		<br>
+		<h1 align="left">Overview</h1>
+		<p align="left">
+			Through this project, we were able to implement a few key components of a physical renderer by building out the underlying path-tracing algorithm. In Parts I and II, we focused upon ray-scene intersection and a bounding volume hierarchy (or BVH) acceleration structure. We focused upon creating the most foundational components of the renderer in these parts, whether it be generating camera rays or pixel samples, implementing the ray-triangle intersection algorithm as per the Moller-Trumbore method, and creating and intersecting the BVH in order to enables efficiently traverse primitives in a scene after categorizing them based on location through an optimally chosen splitPoint. In Parts III, IV, and V, we developed various illumination algorithms to produce the realistic effect of physically based lighting and materials upon our images. We first worked on direct illumination, and created two versions of direct lighting function – one with uniform hemisphere sampling and the other with importance sampling of the lights. Then, we transitioned into indirect global illumination, and estimated the total radiance by recursively calculating its value with each bounce of a ray in the specified sample direction, for which Russian Roulette was utilized for unbiased termination. Finally, we added adaptive sampling to concentrate the samples in the more “difficult” components of the image and avoid using a high number of samples per pixel.
+		</p>
+		<p align="left">
+			Overall, we have found that this project was invaluable in helping us understand the nuances behind path-tracing and what it takes to render a 3D image such that the overall illumination within it is reminiscent of reality. Many of the tasks in this project involved a careful analysis of the various components within an image (ie. triangles, pixel samples, light rays), so we learned how to carefully observe the changes in each one and rendered the images many times to validate our thought process and visualize the results of our implementations! This was collectively one of our biggest takeaways from the project – we now have a greater appreciation for what it takes to visually compose a realistic image because we were able to intuitively comprehend and implement the corresponding lighting and rendering techniques. 
+		</p>
+		<br>
 	</body>
 </html>
