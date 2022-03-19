@@ -229,8 +229,8 @@
 							<p align="left">
 								We implemented adaptive sampling by editing the ray tracing logic in part 1.2. we set up two accumulators: s1 and s2, in order to track the sum of all the illuminance, and all the illuminance squared for convenience of later calculations. In our loop, we put a check to see if the number of samples done so far is a multiple of SamplesPerBatch. If it is, we compute the standard deviation and the mean, as well as our convergence term to check whether it is less than or equal to max tolerance * mean. If it is, then we immediately set the sample size to the buffer for visualization, set the pixel to the right radiance and break out of the loop. We have to make sure that we normalize by the right sample number, which was something we neglected on our first pass. 
 							</p>
-							<img src="Task 5A.png">
-							<img src="Task 5B.png">
+							<img src="bunnytask5.png">
+							<img src="bunnytask5_rate.png">
 							<p align="left">
 								This was found with the following command: -t 8 -s 2048 -a 64 0.05 -l 1 -m 5 -r 480 360 -f bunnytask5.png ../../../dae/sky/CBbunny.dae.
 							</p>
