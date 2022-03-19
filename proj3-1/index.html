@@ -32,5 +32,26 @@
 		<img src="Task 1C.png">
 		<img src="Task 1D.png">
 		<br>
+		<h1 align="left">Part 2: Bounding Volume Hierarchy</h1>
+		<p align="left">
+			We constructed a BVH (or bounding volume hierarchy) algorithm in this next section of the project, as it would serve the purpose of an acceleration structure that would allow us to partition objects during the process of ray-scene intersection much faster. To create the BVH, we first aimed to create an all-inclusive bounding box to “enclose” the list of primitives that was passed into the construct_bvh() function as input. This was done by adding each primitive’s bounding box to the all-inclusive one. We then extracted the centroid that was associated with each primitive. This was used to update the max and min values for each of the x, y, and z coordinates for each centroid (ie. minX, maxX, minY, maxY, minZ, and maxZ) if needed, and to add the current value of each coordinate to a running total in each direction (ie. totalX, totalY, totalZ). After this all-inclusive bounding box was created to “enclose” all of the primitives, we initialized a new node on the BVH binary tree. 
+		</p>
+		<p align="left">
+			By this point, we were able to accumulate enough information from the provided inputs in order to analyze how to split the primitives into a “left” and “right” collection for faster traversal in the future. We first identified the longest axis (between the x-, y-, and z-axes) by finding the difference between the max and min values that were calculated earlier. We knew that the final splitIndex (or the point at which the original vector of primitives was split into two) had to be the midpoint of this longest axis, but in order for this index to be accurate, we had to incorporate a sorting algorithm. Based on which axis (x, y, or z) ended up being the longest one, we calculated the splitPoint as the total coordinate value (ie. totalX, totalY, or totalZ) in that direction divided by the total number of primitives. We chose this heuristic for the splitPoint for many reasons – foremost, by choosing the total coordinate values that correspond to the longest axis, we are able to guarantee that the corresponding split of the primitives into a “left” and “right” section confers the most benefit, or that it is the most balanced. This ensures that the subsequent nodes in the BVH tree are created such that they are efficient to traverse. Additionally, we divided this total value by the total number of primitives so that the splitPoint effectively represents a weighted average of the primitives along the chosen direction.
+		</p>
+		<p align="left">
+			At this point, we found that it was necessary to sort the input list of primitives so that the splitIndex could be used accurately. We used a built-in partition method and split the list into two halves, conditioned on the fact that the splitIndex was the midpoint of the longest axis. To find this, we had to analyze the centroid values (either x, y, or z) of each primitive once again. The final component of the BVH construction algorithm was the base and recursive cases. We determined that if the total number of primitives was less than or equal to the input max_leaf_size, the current BVH node should be considered as a leaf node and the recursion can stop. If not, the recursion is two-fold, in that the left and right “branches” of the current BVH node are each set to a recursive call of construct_bvh() to iterate through one partition of the list of primitives as determined by splitIndex.
+		</p>
+		<p align="left">
+			The following screenshots are of 4 images (max planck, lucy, dragon, bunny) of large .dae files with normal shading. These have a lot of triangles and therefore would not be feasible to render if not for BVH acceleration. 
+		</p>
+		<img src="Task 2A.png">
+		<img src="Task 2B.png">
+		<img src="Task 2C.png">
+		<img src="Task 2D.png">
+		<p align="left">
+			We then ran a few experiments to compare rendering times on a few scenes that had moderately complex geometries. Foremost, we chose cow.dae. To render this scene without BVH acceleration, it took 49.3564 s. To render this scene with BVH acceleration, it only took 0.7565 s. Next, we chose teapot.dae. To render this scene without BVH acceleration, it took 19.8123 s. To render this scene with BVH acceleration, it only took 0.5276 s. Finally, we chose beetle.dae. To render this scene without BVH acceleration, it took 37.8114 s. To render this scene with BVH acceleration, it only took 0.5613 s. Overall, we found that BVH acceleration drastically reduced the amount of time that it took to render these scenes; the renders without this structure varied from anywhere between roughly 20 to 50 seconds, whereas the renders with it all occurred less than 1 second (or ¾ of a second, to be more precise). This massive difference in time complexity can be attributed to the fact that the BVH algorithm enables efficient traversal of primitives in a scene, by categorizing them based on location through an optimally chosen splitPoint.
+		</p>
+		<br>
 	</body>
 </html>
