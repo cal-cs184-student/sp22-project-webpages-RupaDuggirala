@@ -122,17 +122,17 @@
 							<p align="left">
 								The following screenshots are rendered with these two implementations of the direct lighting function. The top one (for each file) is rendered with uniform hemisphere sampling, while the bottom one is rendered with importance sampling.
 							</p>
-							<img src="Task 3A.png">
-							<img src="Task 3B.png">
-							<img src="Task 3C.png">
-							<img src="Task 3D.png">
+							<img src="testbunny_64_32.png">
+							<img src="bunny_64_32.png">
+							<img src="uniformspheres_64_32.png">
+							<img src="importancespheres_64_32.png">
 							<p align="left">
 								In an experiment, we focused upon one particular scene, and ensured that it contained at least one area light. The following 4 screenshots demonstrate how we compared the noise levels in soft shadows when rendering with 1, 4, 16, and 64 light rays (the -l flag) and with 1 sample per pixel (the -s flag) using light sampling. 
 							</p>
-							<img src="Task 3E.png">
-							<img src="Task 3F.png">
-							<img src="Task 3G.png">
-							<img src="Task 3H.png">
+							<img src="bunnys1l1.png">
+							<img src="bunnys1l4.png">
+							<img src="bunnys1l16.png">
+							<img src="bunnys1l64.png">
 							<p align="left">
 								Overall, we found that the images that were rendered with uniform hemisphere sampling are a lot more coarse in texture – for both bunny.dae and CBspheres_lambertian.dae, we can visually see that the background is slightly grainy, which is created by a mix of black and either gray, red, or blue pixels (depending on the specific component). As a result, the shadows and other different types of shading that are present in these images do not appear to be as sharp. Additionally, the top light in the Cornell box appears to be slightly blurred, which means the light effectively “bleeds” into the surrounding black wall. On the other hand, we found that the images that were rendered with importance lighting sampling do not look as coarse from a texture standpoint – for both bunny.dae and CBspheres_lambertian.dae, we can visually see that the background is not grainy, and that it appears to be created entirely out of gray pixels. As a result, the shadows and other different types of shading that are present in these images appear to be sharp and well-defined. Additionally, the corners of the top light in the Cornell box here appear to be sharp, which means that the light and the black wall look more like discrete components.
 							</p>
