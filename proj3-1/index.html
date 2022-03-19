@@ -107,7 +107,7 @@
 							<img src="maxplanck.png">
 							<img src="dragontask2.png">
 							<img src="bunnytask2.png">
-							<img src="Task 2D.png">
+							<img src="CBlucy.png">
 							<p align="left">
 								We then ran a few experiments to compare rendering times on a few scenes that had moderately complex geometries. Foremost, we chose cow.dae. To render this scene without BVH acceleration, it took 49.3564 s. To render this scene with BVH acceleration, it only took 0.7565 s. Next, we chose teapot.dae. To render this scene without BVH acceleration, it took 19.8123 s. To render this scene with BVH acceleration, it only took 0.5276 s. Finally, we chose beetle.dae. To render this scene without BVH acceleration, it took 37.8114 s. To render this scene with BVH acceleration, it only took 0.5613 s. Overall, we found that BVH acceleration drastically reduced the amount of time that it took to render these scenes; the renders without this structure varied from anywhere between roughly 20 to 50 seconds, whereas the renders with it all occurred less than 1 second (or ¾ of a second, to be more precise). This massive difference in time complexity can be attributed to the fact that the BVH algorithm enables efficient traversal of primitives in a scene, by categorizing them based on location through an optimally chosen splitPoint.
 							</p>
