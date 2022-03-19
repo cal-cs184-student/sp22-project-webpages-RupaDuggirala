@@ -14,5 +14,23 @@
 			Overall, we have found that this project was invaluable in helping us understand the nuances behind path-tracing and what it takes to render a 3D image such that the overall illumination within it is reminiscent of reality. Many of the tasks in this project involved a careful analysis of the various components within an image (ie. triangles, pixel samples, light rays), so we learned how to carefully observe the changes in each one and rendered the images many times to validate our thought process and visualize the results of our implementations! This was collectively one of our biggest takeaways from the project – we now have a greater appreciation for what it takes to visually compose a realistic image because we were able to intuitively comprehend and implement the corresponding lighting and rendering techniques. 
 		</p>
 		<br>
+		<h1 align="left">Part 1: Ray Generation and Scene Intersection</h1>
+		<p align="left">
+			The rendering pipeline that we built in this section of the project involved two key components: ray generation and the intersection of primitives. To generate camera rays in the generate_ray() function, we first converted the given x-y image coordinates into a 3D coordinate system by creating the vector (x, y, 1). To convert this vector into camera space and yield the correct coordinates, we found that a combined translation and scale transform was necessary. We first converted the hFov and vFov sensor parameters from degrees to radians, and calculated tan(0.5 * hFov) to be t_x and tan(0.5 * vFov) to be t_y – these were the quantities for the translation matrix. The initial 3D coordinates were then scaled by this translation matrix. To create the scale matrix, we calculated 2 * tan(0.5 * hFov) to be s_x and 2 * tan(0.5 * vFov) to be s_y. This matrix was multiplied by the output of the translation transform, and the resulting camera coordinates were the x-y coordinates of this resulting vector, as well as z = -1. We then generated the ray in the camera space, by creating a ray that was centered at (0, 0, 0) as its origin and with the camera coordinates as its direction. Finally, we transformed this ray to the world space by scaling its origin and direction with the c2w camera-to-world rotation matrix; origin was also scaled by pos, which is the camera position in the world space.
+		</p>
+		<p align="left">
+			To address the intersection of primitives, we referenced the ray-triangle intersection algorithm – this will be explained in detail in the following paragraph. But at the core of this algorithm is the triangle, which is actually a primitive itself. As a result, after identifying that an intersection exists in the intersect() function, we manually set its parameters. One of these parameters is isect->primitive, which is set to “this” since the current triangle is the actual primitive that is being intersected. 
+		</p>
+		<p align="left">
+			Overall, the triangle intersection algorithm that we implemented consists of two methods: has_intersection() and intersect(). In both functions, we applied the Moller-Trumbore ray-triangle intersection algorithm to parametrize the position of the intersection point and the distance from the ray origin to the triangle in terms of their Barycentric coordinates. Barycentric coordinates are utilized here as their positions are invariant even after the triangle and / or ray is moved or rotated, and since this is not the case for traditional Cartesian coordinates. Not only can this parameterization be thought of as a transformation that shifts the triangle from its original world space position to the origin, the intersection point is also effectively shifted from “x-y-z” space to “t-u-v” space (in which u,v are the Barycentric coordinates and t is the distance from the ray origin to the intersection point). Since the ray was effectively parametrized by t, a valid intersection between the ray and triangle is determined by the inequality t >= 0 and the condition that t lies within the range (min_t, max_t) of the input ray. Mathematically, this results in a system of linear equations, which can be solved by calculating the determinant as per Cramer’s Rule. In our implementation, the has_intersection() function utilizes this logic to test whether an intersection between the ray and triangle exists, while the intersect() function extends it a bit further to actually record the intersection point.  
+		</p>
+		<p align="left">
+			The following screenshots of a few small .dae files show the outputs of our implementation, all with normal shading.
+		</p>
+		<img src="Task 1A.png">
+		<img src="Task 1B.png">
+		<img src="Task 1C.png">
+		<img src="Task 1D.png">
+		<br>
 	</body>
 </html>
