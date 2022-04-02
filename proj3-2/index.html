@@ -1,7 +1,190 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Project 3-2 here
-	</body>
-</html>
+<!DOCTYPE html>
+<!--
+	Moon by GetTemplates.co
+	URL: https://gettemplates.co
+-->
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Moon - Multipurpose Bootstrap 4 Template by GetTemplates.co</title>
+	<meta name="description" content="Core HTML Project">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- External CSS -->
+	<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css">
+	<link rel="stylesheet" href="vendor/lightcase/lightcase.css">
+
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700" rel="stylesheet">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/style.min.css">
+	<link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+	<link href="https://file.myfontastic.com/7vRKgqrN3iFEnLHuqYhYuL/icons.css" rel="stylesheet">
+
+	<!-- Modernizr JS for IE8 support of HTML5 elements and media queries -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+
+</head>
+<body data-spy="scroll" data-target="#navbar-nav-header" class="single-layout">
+	<div class="boxed-page">
+		<nav id="gtco-header-navbar" class="navbar navbar-expand-lg py-4">
+			<div class="container">
+				<a class="navbar-brand d-flex align-items-center" href="../index.html">
+					<span class="lnr lnr-moon"></span>
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-nav-header" aria-controls="navbar-nav-header" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="lnr lnr-menu"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbar-nav-header">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="../index.html">Back to Home</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</nav>		<div class="jumbotron d-flex align-items-center" style="background-image: url(dragonpart4.png)">
+			<div class="container text-center">
+				<h1 class="display-2 mb-4 single-blog-title">Project 3.2: Pathtracer</h1>
+				<h3>Celeste Wu, Rupa Duggirala</h3>
+			</div>
+		</div>		<!-- Contact Form Section -->
+		<section id="gtco-single-content" class="bg-white">
+			<div class="container">
+				<div class="section-content blog-content">
+					<div class="row">
+						<!-- Single Content Holder -->
+						<div class="col-md-8 offset-md-2 mt-4">
+							<h5>Link to Webpage: <a href=https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj3-2/index.html>https://cal-cs184-student.github.io/sp22-project-webpages-RupaDuggirala/proj3-2/index.html</a></h5>
+							<!-- <img class="float-left" width="320px" src="img/blog-4.jpg" alt=""> -->
+							<br>
+							<h1 align="left">Overview</h1>
+							<p align="left">
+								In this project, we are expanding upon our work from project 3-1. We elected to do parts 1 and 4, which are adding mirror and glass materials for rendering and adding depth of field respectively. The first part utilizes reflection and refraction concepts in order to model the behavior of non-matte materials, which allows us to expand our repertoire of bsdfs. After completing part four, we can produce impressive images that are similar to those captured with a real camera. This is because real cameras have a complex system of lenses, and we are trying to replicate that by using the thin lens model rather than defaulting to the pinhole model as we have done in project 3-1. Luckily for us, most of this project was smooth sailing. It was key to always double check whether we were in camera or world space, as well as keeping to the wo and wi conventions when it came to implementing reflection/refraction in part 1. Otherwise, no major roadblocks were encountered!
+							</p>
+							<h1 align="left">Part 1: Mirror and Glass Materials</h1>
+							<p align="left">
+								In order to add glass and mirror materials to our rendering capabilities, we had to fill in the reflection and refraction helper functions. These two allowed us to populate the wi vector correctly for later use when sampling. The reflection equation we used was:
+								<br> *wi = -wo + 2.0 * dot(wo, Vector3D(0, 0, 1)) * Vector3D(0, 0, 1),
+								<br> where Vector3D(0, 0, 1) represents the normal since we are in object space here. The refraction logic was a little more complex, since we are only given one index of refraction and have to figure out whether we are entering or exiting the medium depending on the sign of the z coordinate. Then, we adjusted eta accordingly with the given ior from the arguments. Finally, our equation looked like this:
+								<br> *wi = Vector3D(-eta * wo.x, -eta * wo.y, sqrt(1 - eta * eta * (1 - wo.z * wo.z))),
+								<br> where we would manually change the sign of the z position to be opposite that of the wo.
+							</p>
+							<p align="left">
+								Then, we just had to make sure to call those helper functions correctly while sampling, as well as setting the pdf for these special cases. We also have to make sure to return the correct values: transmittance / abs_cos_theta(*wi) / eta / eta for refraction in order to cancel out the abs_cos_theta(*wi) term, and the eta^2 adjusts for the radiance change when the medium light travels through changes. Similarly, we return reflectance / abs_cos_theta(*wi) for reflection. It’s important to note that we don’t have to adjust with eta^2 here because we are not changing the radiance of the ray at all. Everything gets reflected the same – with the exception of the direction.
+							</p>
+							<p align="left">
+								Finally, in order to correctly render glass, we combine our refract and reflect logic. Glass is a material that performs both, and we can approximate the behavior by using a glorified coin flip with Schlick’s reflection coefficient. This way, our renderer doesn’t have to worry about branching out two rays and any intersection. We also have to be cautious about the case of a total internal reflection, which is when nothing will emerge from the surface of the new medium because everything is reflected back. We handle that case in the refract helper function, and simply process and return false in the sampling function. After all these steps, we are ready to render images!
+							</p>
+							<p align="left">
+								The following images were rendered from CBspheres.dae: -t 8 -s 1024 -l 4 -m xyz -r 480 360, where xyz was the maximum ray depth specified (0, 1, 2, 3, 4, 5, 100).
+								<br>
+							</p>
+							<img src="CBspheres.png">
+							<img src="teapotpart1.png">
+							<img src="cowpart1.png">
+							<img src="beetlepart1.png">
+							<br>
+							<h1 align="left">Part 4: Depth of Field</h1>
+							<p align="left">
+								A pinhole camera model assumes that the only contribution to a pixel is through a small hole located at (0, 0, 0) in camera space. This means that everything is snapped into focus, as there aren’t “competing” contributions when rendering each pixel. On the other hand, the thin lens model takes into consideration a whole disk of possibilities that the pixel could receive radiance through. This results in some parts of the image being in focus (parts that are exactly the focal distance away from the lens). Other parts of the image are receiving a range of input – these parts contain objects that are either closer or further than the focal distance, so the rays originating from the same pixel may hit different parts of the object, resulting in a blurrier focus.
+							</p>
+							<p align="left">
+								In order to implement this, we completed the function generate_ray_for_thin_lens. Similar to project 3-1 part 1, we computed the outgoing direction from a pixel to the center of the lens in camera space. Then, we used the fact that rays going through the center of the lens do not get refracted at all, and multiplied the outgoing direction by the focal distance in order to compute the intersection between the focal plane and the ray. This gives us the pFocus point that all rays traced from the pixel of interest will pass through after going through the lens. Then, we can randomly sample the disk representing the thin lens by using a random R sampled between 0 and 1, as well as a random theta sampled between 0 and 2pi. After taking into consideration how points are distributed, one will realize the radius distribution is not uniform if only randomly picked from 0 and 1. In fact, a specific radius’ occurrence corresponds to the circumference, which leads to a r^2 cumulative density function, so we need to square root it to get a uniformly distributed radius sampling. Then, we scale it with the lens radius and sin or cos of the random theta in order to get the y or x coordinate of pLens. Finally, we set the z of pLens to 0 since the lens is set on z=0. Now we simply trace the ray from pLens to pFocus and return this ray of interest. Of course, one must also remember to apply a camera to world coordinate change and normalize any vectors as needed in order to fit with convention that we’ve used so far.
+							</p>
+							<p align="left">
+								In order to demonstrate the differences between a pinhole camera model and a thin-lens camera model, we can alter the focal distance in order to focus on different depths in each image. This is contrasted with the pinhole camera model, where everything is simultaneously in focus.
+							</p>
+							<p align="left">
+								Here’s a focus stack of ../../../dae/sky/CBdragon.dae rendered with the following settings:
+								<br> -t 8 -s 256 -l 4 -m 12 -b 1.23 -d 4.56 -r 480 360 -f writeup_dragon_01.png
+							</p>
+							<img src="writeup_dragon_01.png">
+							<p align="left">
+								<br> -t 8 -s 256 -l 4 -m 12 -b 1.23 -d 4.76 -r 480 360 -f writeup_dragon_02.png
+							</p>
+							<img src="writeup_dragon_02.png">
+							<p align="left">
+								<br> -t 8 -s 256 -l 4 -m 12 -b 1.23 -d 4.96 -r 480 360 -f writeup_dragon_03.png
+							</p>
+							<img src="writeup_dragon_03.png">
+							<p align="left">
+								<br> -t 8 -s 256 -l 4 -m 12 -b 1.23 -d 6 -r 480 360 -f writeup_dragon_04.png
+							</p>
+							<img src="writeup_dragon_04.png">
+							<p align="left">
+								<br> As demonstrated, these images are rendered to focus from the front to the back, until the dragon is a blurry splotch and the background is more in focus.
+							</p>
+							<p align="left">
+								Now, we can explore altering the other parameter – the aperture size. To do this, we are essentially altering the -d option, which is the lens radius. In the next sequence of images rendered, all are focused on the same plane (so the -b parameter denoting the focal distance remains constant). This can be validated by observing that the back of the jaw / front of the torso area remains in focus in all the images. That area represents the slice of the object that is focal distance away from the lens. Now, we will see that going from descending aperture size results in a transition from a blurrier to sharper out-of-focus region, comparatively speaking. This is because the “circle of confusion” is larger when the aperture size is bigger, as discussed in lecture.
+							</p>
+							<p align="left">
+							  Without further ado, here are the images for inspection!
+							</p>
+							<p align="left">
+								-t 8 -s 256 -l 4 -m 12 -b 2 -d 4.56 -r 480 360 -f writeup_dragon_07.png
+							</p>
+							<img src="writeup_dragon_07.png">
+							<p align="left">
+								<br> -t 8 -s 256 -l 4 -m 12 -b 1.23 -d 4.56 -r 480 360 -f writeup_dragon_01.png
+							</p>
+							<img src="writeup_dragon_01.png">
+							<p align="left">
+								<br> -t 8 -s 256 -l 4 -m 12 -b 0.5 -d 4.56 -r 480 360 -f writeup_dragon_05.png
+							</p>
+							<img src="writeup_dragon_05.png">
+							<p align="left">
+								<br> -t 8 -s 256 -l 4 -m 12 -b 0.2 -d 4.56 -r 480 360 -f writeup_dragon_06.png
+							</p>
+							<img src="writeup_dragon_06.png">
+							<h1 align="left">Conclusion</h1>
+							<p align="left">
+								Celeste spearheaded tasks 1.1 to 1.3 while Rupa spearheaded tasks 1.4 and 4.1. We both worked on the writeup together, making sure to switch off (so Celeste spearheaded part 4 writeup etc.) in order to gain a complete understanding of each part that we completed. Everything went smoothly and we are happy to report that we feel accomplished with the process, as well as the final renderings that we have obtained. It is definitely a very satisfying feeling to see things fall into place!
+							</p>
+
+							<hr>
+							<h5>
+								Moon by GetTemplates.co <br>
+								URL: https://gettemplates.co
+							</h5>
+						</div>
+						<!-- End of Contact Form Holder -->
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- End of Contact Form Section -->		<footer class="mastfoot mb-3 bg-white py-4 border-top">
+			<div class="inner container">
+				<div class="row">
+					<div class="col-md-6 d-flex align-items-center justify-content-md-start justify-content-center">
+						<p class="mb-0">&copy; 2019 Moon. All Right Reserved. Design by <a href="https://gettemplates.co" target="_blank">GetTemplates.co</a>.</p>
+					</div>
+
+				</div>
+			</div>
+		</footer>
+	</div>
+
+	</div>
+	<!-- External JS -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+	<script src="vendor/bootstrap/popper.min.js"></script>
+	<script src="vendor/bootstrap/bootstrap.min.js"></script>
+	<script src="vendor/select2/select2.min.js "></script>
+	<script src="vendor/owlcarousel/owl.carousel.min.js"></script>
+	<script src="vendor/isotope/isotope.min.js"></script>
+	<script src="vendor/lightcase/lightcase.js"></script>
+	<script src="vendor/waypoints/waypoint.min.js"></script>
+	<script src="vendor/countTo/jquery.countTo.js"></script>
+
+	<!-- Main JS -->
+	<script src="js/app.min.js "></script>
+	<script src="//localhost:35729/livereload.js"></script>
+</body>
