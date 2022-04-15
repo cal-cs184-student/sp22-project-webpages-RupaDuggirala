@@ -122,7 +122,10 @@
 							<img src="Task 2H.png">
 							<br>
 							
-							
+							<h1 align="left">Task 3: Handling Collisions with Other Objects</h1>
+							<p align="left">
+								For this task, we implemented additional functionality to enable the cloth to collide with spheres and planes through an intersection between adjacent surfaces. For spheres, we analyzed the position of a point mass relative to its distance from the origin and radius of the sphere, and “bumped” this position up to the sphere’s surface if it was already contained within the bounds of the sphere. At the tangent point between the two objects, we applied a correction vector that measured the distance between it to the point mass’ previous position, and scaled this value down by friction. For planes, we analyzed the position of a point mass relative to the dot product of it with the normal vector of the plane, as this would indicate if the point’s current and previous position were on different sides of the plane. Once again, we “bumped” this position up to the plane’s surface if it crossed over the bounds of the plane. At this tangent point, we also applied a correction vector similar to the one used before; not only was this scaled down by friction, we also introduced a minimal surface offset to correct any displacement errors that may occur as a result of point-plane intersection. Overall, we were able to ensure that our cloth could interact with external objects (like spheres and planes) through a collision and respond accordingly. 
+							</p>
 							
 							<hr>
 							<h5>
