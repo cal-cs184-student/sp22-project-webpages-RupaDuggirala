@@ -69,7 +69,7 @@
 							<p align="left">
 								
 							</p>
-							<h1 align="left">Part 1: Masses and Springs</h1>
+							<h1 align="left">Task 1: Masses and Springs</h1>
 							<p align="left">
 								For this task, we aimed to create a representation of a piece of cloth by crafting an evenly-spaced grid that consists of point masses and springs, each of which was stored in its corresponding vector. Foremost, we conceptualized the cloth as a “plane” in physical space, and utilized parameters like its width, height, orientation to initialize the stand-alone point masses on the plane in row-major order and check if they had been “pinned” onto the cloth. Afterwards, we chose to model different constraints between these point masses through the use of springs. Constraints were added to each point mass from its surrounding neighbors, specifically in accordance with what each type of constraint called for – structural was left and above, bending was the same (albeit at a greater distance), and shearing was to the diagonal upper left and right. Overall, we were able to create a horizontally flat cloth wireframe that included point masses and springs for added functionality. 
 							</p>
@@ -91,6 +91,10 @@
 							<img src="task1_pinned2_all.png">
 							<br>
 							
+							<h1 align="left">Part 2: Simulation via Numerical Integration</h1>
+							<p align="left">
+								For this task, we were able to implement physical forces of motion to visualize their impact upon the cloth that we created in task 1. This included external forces (like gravity), which would uniformly impact the cloth, and spring correction forces, which would specifically utilize the spring constraints from before to hold the cloth together. Foremost, we computed a total external force by applying the concept of Newton’s 2nd Law to each individual point mass and summing the result. We also had to consider the use of spring correction forces, and utilized Hooke’s law to calculate the force applied to two masses on their ends if a spring constraint was enabled. After calculating the force that is acting upon each point mass, we then utilized Verlet Integration to compute each point mass’ change in position as a result of this total external force upon the cloth. In these calculations, we used the current velocity and current total acceleration from all forces as a function to identify the change in position from a subsequent time step. We also introduced a damping term here to scale down the velocity in order to emulate the loss of energy in a real-life simulation as a result of friction. Ultimately, we constrained the updated point mass’ positions by introducing a correction factor such that the length of the spring between any two point masses is at most 10% of its length at rest. This was to ensure that no extreme shifts in position occurred (especially if the points were pinned), which meant that the cloth would not be stretched indefinitely as all adjacent point masses ended up being relatively close to one another. 
+							</p>
 							
 							<hr>
 							<h5>
