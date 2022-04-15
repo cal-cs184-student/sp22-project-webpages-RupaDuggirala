@@ -209,6 +209,12 @@
 							<p align="left">
 								From these screenshots, we can see the visual impact in rendering the scene artifacts when the coarseness factor is modified. At a low coarseness factor of 16, the bump and displacement mapping textures look to be relatively similar upon the surface of the sphere or cloth. When the coarseness factor is increased to 128, there appears to be no striking difference (as compared with the previous texture) for the image with bump mapping; both textures are rendered in crisp detail. However, in the image with displacement mapping, we can observe that the effect of the displaced vertex positions is not as magnified, and this appears to create an artifact that is more cohesive and smooth yet also inherently “sharp”.
 							</p>
+							<p align="left">
+								At last, we implemented environment-mapped reflections – in this manner, we were able to sample an incoming radiance (albeit without any other scene intersections) using a mirror shader. The following two screenshots depict this mirror shader, both on the cloth and sphere at two consecutive instances during a collision.
+							</p>
+							<img src="Task 5O.png">
+							<img src="Task 5P.png">
+							<br>
 							
 							<hr>
 							<h5>
