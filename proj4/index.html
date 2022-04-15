@@ -142,7 +142,10 @@
 							<img src="Task 3E.png">
 							<br>
 							
-							
+							<h1 align="left">Task 4: Handling Self-Collisions</h1>
+							<p align="left">
+								For this task, we were able to expand the collision functionality that was introduced in the previous task – not only did we want the cloth to collide with external objects (like spheres and planes) and respond accordingly, we also felt it was critical for the cloth to be able to collide with itself. In such “self-collisions”, the cloth should be able to neatly fold or fall on itself instead of merely just cutting through the plane and ignoring its own presence. To implement this additional functionality, we utilized the concept of spatial hashing to map a 3D box volume within the scene (which is represented as float) to a vector that encapsulates all of the point masses that are contained within the 3D box volume. To do this, the position of each individual point mass has to be mapped to a specific 3D box volume, which can be done by segmenting the entire scene into equally-sized 3D boxes. The range of coverage for these boxes is calculated by splitting the width and height of the scene evenly amongst the number of points along each dimension, and these factors are also scaled by a factor of 3 to optimize the overall algorithm. The mappings in this hash table are ultimately utilized to determine if each pair of point masses is a distance that is double the cloth’s thickness apart. A correction vector to ensure that this distance is preserved is calculated for each pair, and the process is repeated for all of the neighboring point masses that surround a particular one (excluding itself). Ultimately, the final correction vector for a single point mass is the average of all of the pairwise correction vectors, scaled down by the number of simulation steps to prevent any sudden position corrections.
+							</p>
 							
 							<hr>
 							<h5>
