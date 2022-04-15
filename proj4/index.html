@@ -71,6 +71,9 @@
 							</p>
 							<h1 align="left">Part 1: Masses and Springs</h1>
 							<p align="left">
+								For this task, we aimed to create a representation of a piece of cloth by crafting an evenly-spaced grid that consists of point masses and springs, each of which was stored in its corresponding vector. Foremost, we conceptualized the cloth as a “plane” in physical space, and utilized parameters like its width, height, orientation to initialize the stand-alone point masses on the plane in row-major order and check if they had been “pinned” onto the cloth. Afterwards, we chose to model different constraints between these point masses through the use of springs. Constraints were added to each point mass from its surrounding neighbors, specifically in accordance with what each type of constraint called for – structural was left and above, bending was the same (albeit at a greater distance), and shearing was to the diagonal upper left and right. Overall, we were able to create a horizontally flat cloth wireframe that included point masses and springs for added functionality. 
+							</p>
+							<p align="left">
 								Here is a screenshot of scene/pinned2.json, taken from a viewing angle where the structure of our point masses and springs are visible. 
 							</p>
 							<img src="task1_pinned2_01.png">
