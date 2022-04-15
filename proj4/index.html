@@ -126,6 +126,23 @@
 							<p align="left">
 								For this task, we implemented additional functionality to enable the cloth to collide with spheres and planes through an intersection between adjacent surfaces. For spheres, we analyzed the position of a point mass relative to its distance from the origin and radius of the sphere, and “bumped” this position up to the sphere’s surface if it was already contained within the bounds of the sphere. At the tangent point between the two objects, we applied a correction vector that measured the distance between it to the point mass’ previous position, and scaled this value down by friction. For planes, we analyzed the position of a point mass relative to the dot product of it with the normal vector of the plane, as this would indicate if the point’s current and previous position were on different sides of the plane. Once again, we “bumped” this position up to the plane’s surface if it crossed over the bounds of the plane. At this tangent point, we also applied a correction vector similar to the one used before; not only was this scaled down by friction, we also introduced a minimal surface offset to correct any displacement errors that may occur as a result of point-plane intersection. Overall, we were able to ensure that our cloth could interact with external objects (like spheres and planes) through a collision and respond accordingly. 
 							</p>
+							<p align="left">
+								At this point, we were able to experiment with the spring constant parameter “ks” again. From the previous task, we were able to identify that this parameter is related to the “stretchiness” of the springs – that is, a smaller spring constant ensures that the springs are not met with as much resistance and can therefore stretch much more. When a cloth with a lower spring constant collides with a sphere, it stretches much more in a fluid and elastic manner. As a result of the extra folds that are created as a result of this effect, it appears as though a greater percentage of the sphere is covered completely by the cloth. On the other hand, a larger spring constant ensures that the springs are met with much more resistance and are therefore not able to stretch as much. When a cloth with a higher spring constant collides with a sphere, it is not able to stretch as much over the surface of the cloth as it appears to be stiff. As a result of the minimal folds that are created as a result of this effect, it appears as though a smaller percentage of the sphere is covered completely by the cloth. The following three screenshots depict this difference, in which the first has a ks of 500, the next has a ks of 5,000, and the last has a ks of 50,000. This effect can only be mitigated by influencing how the cloth falls onto the sphere, which could potentially be done by adjusting the damping factor (as shown in the previous task).
+							</p>
+							<img src="Task 3A.png">
+							<img src="Task 3B.png">
+							<img src="Task 3C.png">
+							<p align="left">
+								Finally, here is a screenshot of our shaded cloth lying peacefully at rest on the plane.
+							</p>
+							<img src="Task 3D.png">
+							<p align="left">
+								This screenshot depicts how we were able to customize the hues within the cloth itself through the use of shaders!
+							</p>
+							<img src="Task 3E.png">
+							<br>
+							
+							
 							
 							<hr>
 							<h5>
