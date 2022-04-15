@@ -186,6 +186,29 @@
 							</p>
 							<img src="Task 5E.png">
 							<img src="Task 5F.png">
+							<p align="left">
+								We also implemented bump and displacement mapping – in this manner, we were able to extend the functionality of a shader program in which it could process and apply an encoded height map within a texture. The following two screenshots depict bump mapping, both on the cloth and sphere at two consecutive instances during a collision.
+							</p>
+							<img src="Task 5G.png">
+							<img src="Task 5H.png">
+							<p align="left">
+								The next two screenshots depict displacement mapping, again both on the cloth and sphere at two consecutive instances during a collision.
+							</p>
+							<img src="Task 5I.png">
+							<img src="Task 5J.png">
+							<p align="left">
+								To implement bump mapping, we calculated the displaced world space normal vectors of an object through the use of a tangent-bitangent-normal matrix. This was utilized in order to craft an illusion of lighting detail (ie. the texture that is akin to bump maps) upon its surface through the fragment shader. To implement displacement mapping, we calculated the displaced positions of the vertices in the direction of the model space vertex normal, through the use of a vertex shader on top of a complementary fragment one. This had the effect of modifying the geometrical delineation of the object. From the four previous renders, we can visualize the difference between bump and displacement mapping – the former merely alters the surface of the cloth and sphere through the use of a bump map, which means that the resulting texture is rendered in crisp detail and appears to be “sharp”; while the latter also alters the vertex positions of the cloth and sphere, which means that the resulting texture is also subsequently displaced and it appears to be more “smooth”. Otherwise, the lighting effects for both mapping styles are relatively consistent.
+							</p>
+							<p align="left">
+								Finally, we can modify the coarseness of the sphere’s mesh. The following four screenshots visually depict the change in this parameter – the first two display the sphere with bump and then displacement mapping at a coarseness factor of 16, and the next two display the sphere with bump and displacement mapping at a coarseness factor of 128.
+							</p>
+							<img src="Task 5K.png">
+							<img src="Task 5L.png">
+							<img src="Task 5M.png">
+							<img src="Task 5N.png">
+							<p align="left">
+								From these screenshots, we can see the visual impact in rendering the scene artifacts when the coarseness factor is modified. At a low coarseness factor of 16, the bump and displacement mapping textures look to be relatively similar upon the surface of the sphere or cloth. When the coarseness factor is increased to 128, there appears to be no striking difference (as compared with the previous texture) for the image with bump mapping; both textures are rendered in crisp detail. However, in the image with displacement mapping, we can observe that the effect of the displaced vertex positions is not as magnified, and this appears to create an artifact that is more cohesive and smooth yet also inherently “sharp”.
+							</p>
 							
 							<hr>
 							<h5>
